@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">PokeGuess</string>
+
+    <!--===========-->
+    <!-- Menu Page -->
+    <!--===========-->
+    <string name="config_ip">http://192.168.0.160:3000</string>
+
+    <!--===========-->
+    <!-- Menu Page -->
+    <!--===========-->
+    <string name="menu_page_title">PokeGuess</string>
+    <!-- easy, normal, master -->
+    <string name="menu_page_classic_button">Classic</string>
+    <!-- marathon mode -->
+    <string name="menu_page_challenge_button">Challenge</string>
+    <string name="menu_page_leaderboard_button">Leaderboard</string>
+    <string name="menu_page_quit_button">Quit</string>
+    <string name="menu_page_credits">Made by Ahmed MOUSSA &amp; Kévin LEGENDRE</string>
+
+    <!--===========-->
+    <!-- Game Page -->
+    <!--===========-->
+    <string name="game_pokemon_name">Who\'s that pokemon?</string>
+    <string name="game_pokemon_name_input">@string/game_pokemon_name</string>
+    <string name="game_confirm_pokemon_button">Guess</string>
+    <string name="game_joker_button">I don\'t know</string>
+
+    <!--==============-->
+    <!-- Profile Page -->
+    <!--==============-->
+    <string name="game_player_name">Your game name</string>
+    <string name="game_player_name_input">@string/game_player_name</string>
+    <string name="game_confirm_player_button">Confirm</string>
+
+    <!--==============-->
+    <!-- Leader-board -->
+    <!--==============-->
+    <string name="leaderboard_title">PokeGuess Leaderboard</string>
+    <string name="leaderboard_description">Challenge mode leaderboard</string>
+    <string name="leaderboard_player_name">Name:</string>
+    <string name="leaderboard_player_score">Score:</string>
+    <string name="leaderboard_player_rank">Rank:</string>
+
+</resources>

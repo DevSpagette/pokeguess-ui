@@ -1,0 +1,5 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/green_flash"
+    android:oneshot="true">
+    <item android:drawable="@color/green" android:duration="250" />
+</animation-list>

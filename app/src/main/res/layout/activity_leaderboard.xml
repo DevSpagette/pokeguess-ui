@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver">
+
+    <!-- Button to redirect to the main activity (Top-left corner) -->
+    <ImageButton
+        android:id="@+id/back_to_main_button"
+        android:layout_width="46dp"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:id="@+id/leaderboard_title"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/back_to_main_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/leaderboard_title" />
+
+    <TextView
+        android:id="@+id/leaderboard_description"
+        style="@style/SubtitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/leaderboard_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/leaderboard_description" />
+
+    <TableLayout
+        android:id="@+id/leaderboard_table"
+        style="@style/DefaultTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/leaderboard_description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp">
+        <TableRow
+            android:layout_height="match_parent"
+            android:background="@drawable/table_row_background">
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>
