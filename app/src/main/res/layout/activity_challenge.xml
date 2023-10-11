@@ -26,7 +26,7 @@
         android:layout_marginTop="64dp"
         android:text="Score: 0" />
 
-    <!-- ImageView to display the Pokémon sprite -->
+    <!-- ImageView to display the Pokemon sprite -->
     <ImageView
         android:id="@+id/pokemonImageView"
         android:layout_width="256dp"
@@ -41,32 +41,45 @@
         app:srcCompat="@drawable/placeholder_pokemon" />
 
     <!-- EditText for user input (single-line) -->
-    <EditText
-        android:id="@+id/pokemonEditText"
+    <LinearLayout
+        android:id="@+id/pokemonEditLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pokemonImageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/game_pokemon_name_input"
-        style="@style/DefaultTextStyle"
-        android:maxLines="1"
-        android:gravity="center"/>
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/pokemonEditText"
+            style="@style/DefaultTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:hint="@string/game_pokemon_name_input"
+            android:maxLines="1"
+            android:paddingVertical="4dp"
+            android:paddingBottom="2dp"
+            android:textColorHint="@color/blue_volc"
+            android:textCursorDrawable="@drawable/custom_cursor" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/orange_volc" />
+    </LinearLayout>
 
     <!-- Button for "I don't know" -->
     <Button
         android:id="@+id/idkButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pokemonEditText"
+        android:layout_below="@+id/pokemonEditLayout"
         android:layout_centerHorizontal="true"
-        android:text="I don't know"
         android:background="@android:color/transparent"
-        android:textColor="@color/orange_volc"
         android:padding="15dp"
-        />
+        android:text="I don't know"
+        android:textColor="@color/orange_volc" />
 
     <!-- Button to confirm and send API POST request -->
     <Button

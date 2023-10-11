@@ -37,7 +37,7 @@
     <!-- Leader-board -->
     <!--==============-->
     <string name="leaderboard_title">PokeGuess Leaderboard</string>
-    <string name="leaderboard_description">Challenge mode leaderboard</string>
+    <string name="leaderboard_description">Top 100 challengers</string>
     <string name="leaderboard_player_name">Name:</string>
     <string name="leaderboard_player_score">Score:</string>
     <string name="leaderboard_player_rank">Rank:</string>

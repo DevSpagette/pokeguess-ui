@@ -16,9 +16,19 @@
         android:layout_marginTop="32dp"
         android:text="PokeGuess" />
 
+    <ImageView
+        android:id="@+id/mainPageImage"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_below="@id/titleTextView"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/pokeguess_no_bg" />
+
     <LinearLayout
+        android:id="@+id/menuPageButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/mainPageImage"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical">
@@ -64,14 +74,57 @@
             android:textColor="@color/orange_volc" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/bottomTextView"
+    <RelativeLayout
+        android:id="@+id/menuPageStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/menuPageButtons"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="@string/menu_page_credits"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/refreshButton"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_refresh" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/refreshButton"
+            android:layout_marginTop="-16dp">
+
+            <View
+                android:id="@+id/statusDot"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="4dp"
+                android:layout_toStartOf="@id/serverStatusText"
+                android:background="@drawable/red_dot" />
+
+            <TextView
+                android:id="@+id/serverStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="API status"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/bottomTextView"
         style="@style/Credits"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/menu_page_credits" />
 
 </RelativeLayout>
