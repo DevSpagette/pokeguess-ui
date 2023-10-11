@@ -29,9 +29,12 @@
     <!--==============-->
     <!-- Profile Page -->
     <!--==============-->
-    <string name="game_player_name">Your game name</string>
+    <string name="game_player_title">PokeGuess profile</string>
+    <string name="game_player_name">Username: </string>
     <string name="game_player_name_input">@string/game_player_name</string>
-    <string name="game_confirm_player_button">Confirm</string>
+    <string name="game_player_password">Password: </string>
+    <string name="game_player_password_input">@string/game_player_password</string>
+    <string name="game_player_confirm_button">Confirm</string>
 
     <!--==============-->
     <!-- Leader-board -->

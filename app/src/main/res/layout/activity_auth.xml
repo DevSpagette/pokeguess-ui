@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver">
+
+    <!-- Button to redirect to the main activity (Top-left corner) -->
+    <ImageButton
+        android:id="@+id/back_to_main_button"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:id="@+id/profile_title"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/back_to_main_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="128dp"
+        android:text="@string/game_player_title" />
+
+    <LinearLayout
+        android:id="@+id/textEditLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_title"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <!-- Username Input Field -->
+        <EditText
+            android:id="@+id/username_input"
+            style="@style/DefaultTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_title"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:hint="Username"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColorHint="@color/blue_volc"
+            android:textCursorDrawable="@drawable/custom_cursor" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/orange_volc"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/textEditLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textEditLayout1"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <!-- Password Input Field -->
+        <EditText
+            android:id="@+id/password_input"
+            style="@style/DefaultTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textColorHint="@color/blue_volc"
+            android:textCursorDrawable="@drawable/custom_cursor" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/orange_volc"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"/>
+    </LinearLayout>
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textEditLayout2"
+        style="@style/DefaultTextStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue_volc"
+        android:text="Login" />
+
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        style="@style/DefaultTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameTextView"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Logout"
+        android:visibility="gone" />
+
+</RelativeLayout>
