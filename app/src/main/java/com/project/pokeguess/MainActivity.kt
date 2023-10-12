@@ -4,10 +4,15 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -20,11 +25,26 @@ import java.net.SocketTimeoutException
 class MainActivity : AppCompatActivity() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
+    private val handler = Handler(Looper.getMainLooper())
+    private val imageSwapDelay = 3000L // Delay in milliseconds for image change
+    private val homeImage = mutableListOf<String>()
+
+    private lateinit var homePokemonImageView: ImageView
+    private var rng = 0
+    private var currentIndex = 0
     private var jwtToken: String? = null
     private var status = "..."
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        homePokemonImageView = findViewById(R.id.mainPageImage)
+
+        homeImage.addAll(generatePokemonSprite())
+        swapImagesPeriodically()
 
         // Retrieve the jwtToken from SharedPreferences
         jwtToken = getJwtToken()
@@ -71,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         classicButton.setOnClickListener {
             if (jwtToken != null) {
-                Snackbar.make(findViewById(android.R.id.content), "Classic mod not available yet, redirected to challenge!", Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(android.R.id.content), "Classic mod not available switch to challenge", Snackbar.LENGTH_LONG)
                     .setAction("Log In") {
                         val intent = Intent(this, AuthActivity::class.java)
                         startActivity(intent)
@@ -107,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             status = "..."
-            serverStatusText.text = "API status: $status"
+            serverStatusText.text = "API status$status"
             serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
         }
 
@@ -150,6 +170,46 @@ class MainActivity : AppCompatActivity() {
         // Retrieve the jwtToken from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getString("jwtToken", null)
+    }
+
+    private fun generatePokemonSprite(): MutableList<String>{
+        val homeImageView = findViewById<ImageView>(R.id.mainPageImage)
+        val list = mutableListOf<String>()
+
+        for (i in 1..10){
+            rng = (1..1006).random()
+            val imageUrl = "$apiUrl/sprite/$rng"
+
+            list.add(imageUrl)
+        }
+        return list
+    }
+
+    private fun swapImagesPeriodically() {
+        handler.post(object : Runnable {
+            override fun run() {
+                // Create a fade-out animation
+                val fadeOutAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
+                homePokemonImageView.startAnimation(fadeOutAnimation)
+                handler.postDelayed({
+                    // Create a fade-in animation
+                    val fadeInAnimation =
+                        AnimationUtils.loadAnimation(applicationContext, R.anim.fade_animation)
+                    homePokemonImageView.startAnimation(fadeInAnimation)
+
+                    // Update the image source
+                    runOnUiThread {
+                        Glide.with(this@MainActivity).load(homeImage[currentIndex])
+                            .into(homePokemonImageView)
+                    }
+
+                    // Increment the index, or reset if it exceeds the array length
+                    currentIndex = (currentIndex + 1) % homeImage.size
+                },fadeOutAnimation.duration)
+                // Schedule the next image swap
+                handler.postDelayed(this, imageSwapDelay)
+            }
+        })
     }
 
 }

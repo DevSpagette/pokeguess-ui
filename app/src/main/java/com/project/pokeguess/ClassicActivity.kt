@@ -19,7 +19,7 @@ import org.json.*
 import java.io.IOException
 
 
-open class ChallengeActivity : AppCompatActivity() {
+open class ClassicActivity : AppCompatActivity() {
 
     private var shouldGenerateNewSprite = true
     private var rng = 0
@@ -158,7 +158,7 @@ open class ChallengeActivity : AppCompatActivity() {
         val imageUrl = "$apiUrl/obf_sprite/$rng"
         runOnUiThread {
             inputPokemon.setText("")
-            Glide.with(this@ChallengeActivity).load(imageUrl).into(pokemonImageView)
+            Glide.with(this@ClassicActivity).load(imageUrl).into(pokemonImageView)
         }
         shouldGenerateNewSprite = false
     }
@@ -168,7 +168,7 @@ open class ChallengeActivity : AppCompatActivity() {
         val pokemonImageView = findViewById<ImageView>(R.id.pokemonImageView)
         val spriteUrl = "$apiUrl/sprite/$rng"
         runOnUiThread {
-            Glide.with(this@ChallengeActivity).load(spriteUrl).into(pokemonImageView)
+            Glide.with(this@ClassicActivity).load(spriteUrl).into(pokemonImageView)
         }
         // wait 2 seconds for next round
         Thread.sleep(2000)
