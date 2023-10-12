@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import okhttp3.Call
 import okhttp3.Callback
@@ -26,34 +27,64 @@ import java.net.SocketTimeoutException
 import kotlin.random.Random
 
 object GLOBAL {
+    var GEN1Checked = true
+    var GEN2Checked = true
+    var GEN3Checked = true
+    var GEN4Checked = true
+    var GEN5Checked = true
+    var GEN6Checked = true
+    var GEN7Checked = true
+    var GEN8Checked = true
+    var GEN9Checked = true
+
     const val MAX = 1017
-    val GEN1 = 1..151
-    val GEN2 = 152..251
-    val GEN3 = 252..386
-    val GEN4 = 387..493
-    val GEN5 = 494..649
-    val GEN6 = 650..721
-    val GEN7 = 722..809
-    val GEN8 = 810..905
-    val GEN9 = 906..1017
+    private val GEN1 = 1..151
+    private val GEN2 = 152..251
+    private val GEN3 = 252..386
+    private val GEN4 = 387..493
+    private val GEN5 = 494..649
+    private val GEN6 = 650..721
+    private val GEN7 = 722..809
+    private val GEN8 = 810..905
+    private val GEN9 = 906..1017
+
+    val checkedGens = arrayOf(
+        GEN1Checked, GEN2Checked, GEN3Checked, GEN4Checked, GEN5Checked,
+        GEN6Checked, GEN7Checked, GEN8Checked, GEN9Checked
+    )
 
     // Function to generate a random number exclusively within the specified ranges
-    fun generateRandomNumber(vararg ranges: IntRange): Int {
+    fun generateRandomNumber(): Int {
+        val selectedRanges = mutableListOf<IntRange>()
+        for (i in checkedGens.indices) {
+            if (checkedGens[i]) {
+                when (i) {
+                    0 -> selectedRanges.add(GEN1)
+                    1 -> selectedRanges.add(GEN2)
+                    2 -> selectedRanges.add(GEN3)
+                    3 -> selectedRanges.add(GEN4)
+                    4 -> selectedRanges.add(GEN5)
+                    5 -> selectedRanges.add(GEN6)
+                    6 -> selectedRanges.add(GEN7)
+                    7 -> selectedRanges.add(GEN8)
+                    8 -> selectedRanges.add(GEN9)
+                }
+            }
+        }
+
+        if (selectedRanges.isEmpty()) {
+            throw IllegalArgumentException("At least one generation must be selected.")
+        }
+
         while (true) {
-            // Generate a random index between 0 (inclusive) and the size of the 'ranges' array (exclusive)
-            val randomIndex = Random.nextInt(ranges.size)
-            // Get the selected range based on the random index
-            val selectedRange = ranges[randomIndex]
-            // Generate a random number within the specified range (inclusive) using 'Random.nextInt'
+            val randomIndex = Random.nextInt(selectedRanges.size)
+            val selectedRange = selectedRanges[randomIndex]
             val result = Random.nextInt(selectedRange.first, selectedRange.last + 1)
-            // Check if the generated number is not equal to 0
             if (result != 0) {
                 return result
             }
         }
-        // usage = val rng = GLOBAL.generateRandomNumber(GLOBAL.GEN1, GLOBAL.GEN3, GLOBAL.GEN5)
     }
-
 }
 
 class MainActivity : AppCompatActivity() {
@@ -68,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     private var currentIndex = 0
     private var jwtToken: String? = null
     private var status = "..."
+
     companion object {
         const val ACTION_CLOSE_APP = "com.project.pokeguess.ACTION_CLOSE_APP"
     }
@@ -83,6 +115,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.blue_volc)
 
         // Register the broadcast receiver
         val intentFilter = IntentFilter(ACTION_CLOSE_APP)
@@ -96,24 +129,26 @@ class MainActivity : AppCompatActivity() {
         // Retrieve the jwtToken from SharedPreferences
         jwtToken = getJwtToken()
 
+        // load settings
+        loadSettings()
+        for (i in 0 until GLOBAL.checkedGens.size) {
+            println("Generation ${i+1}: ${GLOBAL.checkedGens[i]}")
+        }
+
         // Set a click listener for the "Go to Leaderboard" button
+        val userButton = findViewById<ImageButton>(R.id.userButton)
         val classicButton = findViewById<Button>(R.id.classic_mode_button)
         val challengeButton = findViewById<Button>(R.id.challenge_mode_button)
         val leaderboardButton = findViewById<Button>(R.id.leaderboard_button)
-        val userButton = findViewById<ImageButton>(R.id.userButton)
+        val settingsButton = findViewById<Button>(R.id.settings_button)
         val quitButton = findViewById<Button>(R.id.quit_button)
 
         val refreshButton = findViewById<ImageButton>(R.id.refreshButton)
+
         val serverStatusText = findViewById<TextView>(R.id.serverStatusText)
         val serverStatusView = findViewById<View>(R.id.statusDot)
         serverStatusText.text = "API status: $status"
         serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
-
-        leaderboardButton.setOnClickListener(View.OnClickListener {
-            // Create an Intent to navigate to LeaderboardActivity
-            val intent = Intent(this, LeaderboardActivity::class.java)
-            startActivity(intent)
-        })
 
         userButton.setOnClickListener {
             // Create an Intent to navigate to ChallengeActivity
@@ -127,7 +162,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, ChallengeActivity::class.java)
                 startActivity(intent)
             } else {
-                Snackbar.make(findViewById(android.R.id.content), "Please log in to use this feature", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Please log in to use this feature",
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction("Log In") {
                         val intent = Intent(this, AuthActivity::class.java)
                         startActivity(intent)
@@ -138,7 +177,11 @@ class MainActivity : AppCompatActivity() {
 
         classicButton.setOnClickListener {
             if (jwtToken != null) {
-                Snackbar.make(findViewById(android.R.id.content), "Classic mod not available switch to challenge", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Classic mod not available switch to challenge",
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction("Log In") {
                         val intent = Intent(this, AuthActivity::class.java)
                         startActivity(intent)
@@ -148,7 +191,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, ChallengeActivity::class.java)
                 startActivity(intent)
             } else {
-                Snackbar.make(findViewById(android.R.id.content), "Please log in to use this feature", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Please log in to use this feature",
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction("Log In") {
                         val intent = Intent(this, AuthActivity::class.java)
                         startActivity(intent)
@@ -157,8 +204,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        leaderboardButton.setOnClickListener(View.OnClickListener {
+            // Create an Intent to navigate to LeaderboardActivity
+            val intent = Intent(this, LeaderboardActivity::class.java)
+            startActivity(intent)
+        })
+
+        settingsButton.setOnClickListener {
+            // Create an Intent to navigate to LeaderboardActivity
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
         refreshButton.setOnClickListener {
-            println("RNG = " + GLOBAL.generateRandomNumber(GLOBAL.GEN1, GLOBAL.GEN9))
             checkServerStatus()
         }
 
@@ -222,11 +280,11 @@ class MainActivity : AppCompatActivity() {
         return sharedPreferences.getString("jwtToken", null)
     }
 
-    private fun generatePokemonSprite(): MutableList<String>{
+    private fun generatePokemonSprite(): MutableList<String> {
         val homeImageView = findViewById<ImageView>(R.id.mainPageImage)
         val list = mutableListOf<String>()
 
-        for (i in 1..10){
+        for (i in 1..10) {
             rng = (1..GLOBAL.MAX).random()
             val imageUrl = "$apiUrl/sprite/$rng"
 
@@ -239,7 +297,8 @@ class MainActivity : AppCompatActivity() {
         handler.post(object : Runnable {
             override fun run() {
                 // Create a fade-out animation
-                val fadeOutAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
+                val fadeOutAnimation =
+                    AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
                 homePokemonImageView.startAnimation(fadeOutAnimation)
                 handler.postDelayed({
                     // Create a fade-in animation
@@ -255,7 +314,7 @@ class MainActivity : AppCompatActivity() {
 
                     // Increment the index, or reset if it exceeds the array length
                     currentIndex = (currentIndex + 1) % homeImage.size
-                },fadeOutAnimation.duration)
+                }, fadeOutAnimation.duration)
                 // Schedule the next image swap
                 handler.postDelayed(this, imageSwapDelay)
             }
@@ -266,6 +325,39 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         // Unregister the broadcast receiver when the activity is destroyed
         unregisterReceiver(closeAppReceiver)
+    }
+
+    private fun loadSettings() {
+        val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+
+        // Initialize preferences if they don't exist
+        if (!sharedPreferences.contains("gen1")) {
+            // If the preferences don't exist, initialize them to true
+            for (i in 1..9) {
+                val generationKey = "gen$i"
+                sharedPreferences.edit().putBoolean(generationKey, true).apply()
+            }
+        }
+
+        // Load settings into global variables
+        for (i in 1..9) {
+            val generationKey = "gen$i"
+            val isChecked = sharedPreferences.getBoolean(generationKey, true)
+            // Update the corresponding global variable (if you have them defined)
+            when (i) {
+                1 -> GLOBAL.GEN1Checked = isChecked
+                2 -> GLOBAL.GEN2Checked = isChecked
+                3 -> GLOBAL.GEN3Checked = isChecked
+                4 -> GLOBAL.GEN4Checked = isChecked
+                5 -> GLOBAL.GEN5Checked = isChecked
+                6 -> GLOBAL.GEN6Checked = isChecked
+                7 -> GLOBAL.GEN7Checked = isChecked
+                8 -> GLOBAL.GEN8Checked = isChecked
+                9 -> GLOBAL.GEN9Checked = isChecked
+            }
+            // update the checkedGens!
+            GLOBAL.checkedGens[i - 1] = isChecked
+        }
     }
 
 }

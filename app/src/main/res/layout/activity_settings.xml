@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver">
+
+    <ImageButton
+        android:id="@+id/back_to_main_button"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:id="@+id/settings_title"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/back_to_main_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/settings_title" />
+
+    <TextView
+        android:id="@+id/settings_generationPicker_textView"
+        style="@style/SubtitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Generation Picker"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_generationPicker_textView"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp">
+
+        <!-- Row 1 -->
+        <TableRow>
+
+            <CheckBox
+                android:id="@+id/generation1_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="gen1" />
+
+            <CheckBox
+                android:id="@+id/generation2_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gen2" />
+        </TableRow>
+
+        <!-- Row 2 -->
+        <TableRow>
+
+            <CheckBox
+                android:id="@+id/generation3_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="gen3" />
+
+            <CheckBox
+                android:id="@+id/generation4_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gen4" />
+        </TableRow>
+
+        <!-- Row 3 -->
+        <TableRow>
+
+            <CheckBox
+                android:id="@+id/generation5_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="gen5" />
+
+            <CheckBox
+                android:id="@+id/generation6_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gen6" />
+        </TableRow>
+
+        <!-- Row 4 -->
+        <TableRow>
+
+            <CheckBox
+                android:id="@+id/generation7_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="gen7" />
+
+            <CheckBox
+                android:id="@+id/generation8_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="gen8" />
+        </TableRow>
+
+        <!-- Row 5 -->
+        <TableRow>
+
+            <CheckBox
+                android:id="@+id/generation9_checkbox"
+                style="@style/DefaultTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gen9" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

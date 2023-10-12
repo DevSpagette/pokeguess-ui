@@ -37,7 +37,7 @@ class LeaderboardActivity : AppCompatActivity() {
 
         // array headers
         for (titleText in columnTitles) {
-            val title = TextView(this)
+            val title = TextView(this,  null, 0, R.style.DefaultTextStyle)
             title.text = titleText
             title.setTextColor(Color.BLACK)
             title.background = ContextCompat.getDrawable(this, R.drawable.table_row_background)
@@ -67,7 +67,7 @@ class LeaderboardActivity : AppCompatActivity() {
                         listOf(entry.rank.toString(), entry.name, entry.score.toString())
 
                     for (text in cellTexts) {
-                        val cell = TextView(this@LeaderboardActivity)
+                        val cell = TextView(this@LeaderboardActivity,  null, 0, R.style.DefaultTextStyle)
                         cell.text = text
                         cell.setTextColor(Color.BLACK)
                         cell.background = ContextCompat.getDrawable(
@@ -81,6 +81,8 @@ class LeaderboardActivity : AppCompatActivity() {
                         val params = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
                         cell.layoutParams = params
                         cell.setPadding(16, 16, 16, 16)
+                        cell.textSize = 15F
+                        cell.setTypeface(null, Typeface.NORMAL)
                         row.addView(cell)
                     }
 

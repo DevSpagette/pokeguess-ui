@@ -175,7 +175,7 @@ open class ChallengeActivity : AppCompatActivity() {
         val pokemonImageView = findViewById<ImageView>(R.id.pokemonImageView)
         val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
 
-        rng = (1..GLOBAL.MAX).random()
+        rng = GLOBAL.generateRandomNumber()
         val imageUrl = "$apiUrl/obf_sprite/$rng"
         runOnUiThread {
             inputPokemon.setText("")

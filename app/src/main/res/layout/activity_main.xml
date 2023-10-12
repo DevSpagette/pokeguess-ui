@@ -76,6 +76,16 @@
             android:textColor="@color/silver" />
 
         <Button
+            android:id="@+id/settings_button"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/blue_volc"
+            android:text="@string/menu_page_settings_button"
+            android:textColor="@color/silver" />
+
+        <Button
             android:id="@+id/quit_button"
             style="@style/SubtitleTextStyle"
             android:layout_width="match_parent"
