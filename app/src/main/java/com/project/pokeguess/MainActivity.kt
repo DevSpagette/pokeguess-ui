@@ -1,9 +1,11 @@
 package com.project.pokeguess
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -21,6 +23,38 @@ import okhttp3.Response
 import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
 import java.net.SocketTimeoutException
+import kotlin.random.Random
+
+object GLOBAL {
+    const val MAX = 1017
+    val GEN1 = 1..151
+    val GEN2 = 152..251
+    val GEN3 = 252..386
+    val GEN4 = 387..493
+    val GEN5 = 494..649
+    val GEN6 = 650..721
+    val GEN7 = 722..809
+    val GEN8 = 810..905
+    val GEN9 = 906..1017
+
+    // Function to generate a random number exclusively within the specified ranges
+    fun generateRandomNumber(vararg ranges: IntRange): Int {
+        while (true) {
+            // Generate a random index between 0 (inclusive) and the size of the 'ranges' array (exclusive)
+            val randomIndex = Random.nextInt(ranges.size)
+            // Get the selected range based on the random index
+            val selectedRange = ranges[randomIndex]
+            // Generate a random number within the specified range (inclusive) using 'Random.nextInt'
+            val result = Random.nextInt(selectedRange.first, selectedRange.last + 1)
+            // Check if the generated number is not equal to 0
+            if (result != 0) {
+                return result
+            }
+        }
+        // usage = val rng = GLOBAL.generateRandomNumber(GLOBAL.GEN1, GLOBAL.GEN3, GLOBAL.GEN5)
+    }
+
+}
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,12 +68,25 @@ class MainActivity : AppCompatActivity() {
     private var currentIndex = 0
     private var jwtToken: String? = null
     private var status = "..."
+    companion object {
+        const val ACTION_CLOSE_APP = "com.project.pokeguess.ACTION_CLOSE_APP"
+    }
 
+    private val closeAppReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_CLOSE_APP) {
+                finishAffinity() // Finish all activities in the app
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Register the broadcast receiver
+        val intentFilter = IntentFilter(ACTION_CLOSE_APP)
+        registerReceiver(closeAppReceiver, intentFilter)
 
         homePokemonImageView = findViewById(R.id.mainPageImage)
 
@@ -111,10 +158,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
+            println("RNG = " + GLOBAL.generateRandomNumber(GLOBAL.GEN1, GLOBAL.GEN9))
             checkServerStatus()
         }
 
         quitButton.setOnClickListener {
+            val intent = Intent(MainActivity.ACTION_CLOSE_APP)
+            sendBroadcast(intent)
             finish()
         }
 
@@ -177,7 +227,7 @@ class MainActivity : AppCompatActivity() {
         val list = mutableListOf<String>()
 
         for (i in 1..10){
-            rng = (1..1006).random()
+            rng = (1..GLOBAL.MAX).random()
             val imageUrl = "$apiUrl/sprite/$rng"
 
             list.add(imageUrl)
@@ -210,6 +260,12 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(this, imageSwapDelay)
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister the broadcast receiver when the activity is destroyed
+        unregisterReceiver(closeAppReceiver)
     }
 
 }

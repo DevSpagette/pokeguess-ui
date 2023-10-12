@@ -1,9 +1,9 @@
 package com.project.pokeguess
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -17,7 +17,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.*
 import java.io.IOException
-
 
 open class ChallengeActivity : AppCompatActivity() {
 
@@ -61,9 +60,31 @@ open class ChallengeActivity : AppCompatActivity() {
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
 
-        val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
+        rng = (1..GLOBAL.MAX).random()
 
-        rng = (1..1006).random()
+        val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
+        inputPokemon.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Disable both buttons
+                confirmButton.isEnabled = false
+                idkButton.isEnabled = false
+
+                val name = inputPokemon.text.toString()
+
+                // Create a JSON object with name and id
+                val json = JSONObject()
+                json.put("name", name)
+                json.put("id", rng)
+
+                // Send the API POST request
+                if (rng != 0) {
+                    playRound(json)
+                }
+
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
 
         confirmButton.setOnClickListener {
 
@@ -144,7 +165,7 @@ open class ChallengeActivity : AppCompatActivity() {
             })
         }
 
-        // Load Pokémon sprite from the API
+        // Load Pokemon sprite from the API
         if (shouldGenerateNewSprite)
             generatePokemonSprite()
     }
@@ -154,7 +175,7 @@ open class ChallengeActivity : AppCompatActivity() {
         val pokemonImageView = findViewById<ImageView>(R.id.pokemonImageView)
         val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
 
-        rng = (1..1006).random()
+        rng = (1..GLOBAL.MAX).random()
         val imageUrl = "$apiUrl/obf_sprite/$rng"
         runOnUiThread {
             inputPokemon.setText("")

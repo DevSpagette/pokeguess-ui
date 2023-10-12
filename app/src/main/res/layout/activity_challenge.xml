@@ -51,13 +51,14 @@
 
         <EditText
             android:id="@+id/pokemonEditText"
+            android:imeOptions="actionDone"
+            android:inputType="text"
             style="@style/DefaultTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:hint="@string/game_pokemon_name_input"
-            android:maxLines="1"
             android:paddingVertical="4dp"
             android:paddingBottom="2dp"
             android:textColorHint="@color/blue_volc"
