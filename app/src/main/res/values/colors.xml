@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="silver">#c0c0c0</color>
+    <color name="silver">#D3D3D3</color>
     <color name="green">#008000</color>
     <color name="red">#FF004F</color>
     <color name="yellow">#FFFF0F</color>
-
 
     <!-- Volcarona color palette -->
     <color name="gray_volc">#626262</color>
     <color name="white_volc">#e6e6e6</color>
     <color name="orange_volc">#de5c45</color>
     <color name="sky_volc">#94cdd5</color>
-    <color name="blue_volc">#52949c</color>
+    <color name="blue_volc">#487F86</color>
 
 </resources>

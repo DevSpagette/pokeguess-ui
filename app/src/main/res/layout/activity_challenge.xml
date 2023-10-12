@@ -84,13 +84,14 @@
     <!-- Button to confirm and send API POST request -->
     <Button
         android:id="@+id/confirmButton"
-        style="@style/DefaultTextStyle"
+        style="@style/SubtitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/idkButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/blue_volc"
+        android:textColor="@color/silver"
         android:text="@string/game_confirm_pokemon_button" />
 
 
