@@ -1,5 +1,7 @@
 package com.project.pokeguess
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.widget.Button
@@ -9,14 +11,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.*
 import java.io.IOException
-
-import java.io.FileInputStream
-import java.util.Properties
 
 
 class ChallengeActivity : AppCompatActivity() {
@@ -24,7 +24,7 @@ class ChallengeActivity : AppCompatActivity() {
     private var shouldGenerateNewSprite = true
     private var rng = 0
     private var name = "missingno"
-    private var score = 0
+    private var score: Long = 0
 
     // Add member variables for the buttons
     private lateinit var confirmButton: Button
@@ -36,10 +36,17 @@ class ChallengeActivity : AppCompatActivity() {
     private lateinit var redFlashAnimation: AnimationDrawable
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
+    private var jwtToken: String? = null
+    private var userId: String? = null
+    private var bestScore: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_challenge)
+
+        jwtToken = getJwtToken()
+        userId = getUserId()
+        bestScore = getBestScore()
 
         imageBackground = findViewById(R.id.pokemonImageView)
         redFlashAnimation =
@@ -73,7 +80,7 @@ class ChallengeActivity : AppCompatActivity() {
 
             // Send the API POST request
             if (rng != 0)
-                sendPostRequest(json)
+                playRound(json)
         }
 
         idkButton.setOnClickListener {
@@ -168,8 +175,9 @@ class ChallengeActivity : AppCompatActivity() {
         generatePokemonSprite()
     }
 
-    // confirm guess
-    private fun sendPostRequest(json: JSONObject) {
+    // confirm guess (play a round)
+    private fun playRound(json: JSONObject) {
+
         val client = OkHttpClient()
         val url = "$apiUrl/play"
         val body =
@@ -177,6 +185,7 @@ class ChallengeActivity : AppCompatActivity() {
         val request = Request.Builder()
             .url(url)
             .post(body)
+            .addHeader("Authorization", "Bearer $jwtToken")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -224,8 +233,72 @@ class ChallengeActivity : AppCompatActivity() {
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
                     }
+                    // Create a JSON object with name and id if current score is better
+                    if (score > bestScore) {
+                        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.remove("bestScore")
+                        editor.putLong("bestScore", bestScore)
+                        editor.apply()
+
+                        val json = JSONObject()
+                        json.put("userId", userId)
+                        json.put("score", score)
+                        updateLeaderboard(json)
+                    }
                 }
             }
         })
     }
+
+    // update the leaderboard entry
+    private fun updateLeaderboard(json: JSONObject) {
+        val client = OkHttpClient()
+        val url = "$apiUrl/leaderboard"
+        val body =
+            json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .addHeader("Authorization", "Bearer $jwtToken")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                Snackbar.make(findViewById(android.R.id.content), "Could not update leaderboard, try again later.", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    Snackbar.make(findViewById(android.R.id.content), "Leaderboard updated.", Snackbar.LENGTH_LONG)
+                        .show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    response.body?.close()
+                }
+            }
+        })
+    }
+
+    private fun getJwtToken(): String? {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("jwtToken", null)
+    }
+
+    private fun getUserId(): String? {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("userId", null)
+    }
+
+    private fun getBestScore(): Long {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("bestScore", 0)
+    }
+
 }

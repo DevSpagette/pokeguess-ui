@@ -127,7 +127,7 @@ class LeaderboardActivity : AppCompatActivity() {
 
                         for (i in 0 until min(maxEntries, jsonArray.length())) {
                             val entryObject = jsonArray.getJSONObject(i)
-                            val username = entryObject.getJSONObject("user").getString("username")
+                            val username = entryObject.getJSONObject("userId").getString("username")
                             val score = entryObject.getLong("score")
 
                             entries.add(LeaderboardEntry(username, score.toString(), i + 1))

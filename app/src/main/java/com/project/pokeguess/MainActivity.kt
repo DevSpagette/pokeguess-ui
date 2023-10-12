@@ -69,6 +69,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        classicButton.setOnClickListener {
+            if (jwtToken != null) {
+                Snackbar.make(findViewById(android.R.id.content), "Classic mod not available yet, redirected to challenge!", Snackbar.LENGTH_LONG)
+                    .setAction("Log In") {
+                        val intent = Intent(this, AuthActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .show()
+                // Create an Intent to navigate to ChallengeActivity
+                val intent = Intent(this, ChallengeActivity::class.java)
+                startActivity(intent)
+            } else {
+                Snackbar.make(findViewById(android.R.id.content), "Please log in to use this feature", Snackbar.LENGTH_LONG)
+                    .setAction("Log In") {
+                        val intent = Intent(this, AuthActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .show()
+            }
+        }
+
         refreshButton.setOnClickListener {
             checkServerStatus()
         }

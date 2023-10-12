@@ -10,12 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
@@ -38,10 +33,10 @@ class AuthActivity : AppCompatActivity() {
         logoutButton = findViewById(R.id.logout_button)
 
         val usernameTextView = findViewById<TextView>(R.id.usernameTextView)
+        val bestScoreTextView = findViewById<TextView>(R.id.bestScoreTextView)
 
         // Check if jwtToken is present in SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("jwtToken", null)
+        val token = getJwtToken()
 
         if (token.isNullOrEmpty()) {
             // jwtToken is not present, show the login button
@@ -50,19 +45,24 @@ class AuthActivity : AppCompatActivity() {
             loginButton.visibility = View.VISIBLE
             logoutButton.visibility = View.GONE
             usernameTextView.visibility = View.GONE
+            bestScoreTextView.visibility = View.GONE
         } else {
+            profile()
             // jwtToken is present, hide the login button and show the logout button
             usernameInput.visibility = View.GONE
             passwordInput.visibility = View.GONE
             loginButton.visibility = View.GONE
             logoutButton.visibility = View.VISIBLE
             usernameTextView.visibility = View.VISIBLE
+            bestScoreTextView.visibility = View.VISIBLE
 
             // You can also show the username of the current user (fetch it from your server)
-            val username = sharedPreferences.getString("username", null)// Replace with your server call to get the username
+            val username = getUsername()
+            val bestScore = getBestScore()
+
             if (username != null) {
-                // Set the username in a TextView or any other view
                 usernameTextView.text = "Logged in as: $username"
+                bestScoreTextView.text = "Best score : $bestScore"
             }
         }
 
@@ -70,7 +70,6 @@ class AuthActivity : AppCompatActivity() {
             val username = usernameInput.text.toString()
             val password = passwordInput.text.toString()
 
-            // Make a login request
             login(username, password)
         }
 
@@ -83,7 +82,6 @@ class AuthActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun login(username: String, password: String) {
@@ -102,7 +100,11 @@ class AuthActivity : AppCompatActivity() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Snackbar.make(findViewById(android.R.id.content), "Error while logging in.", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Error while logging in.",
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
             }
 
@@ -113,14 +115,17 @@ class AuthActivity : AppCompatActivity() {
                     val token = json.optString("token")
                     val userId = json.optString("userId")
                     val username = json.optString("username")
+                    val bestScore = json.optLong("bestScore")
 
                     if (!token.isNullOrEmpty()) {
                         // Save the token to SharedPreferences
-                        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val sharedPreferences =
+                            getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
                         editor.putString("jwtToken", token)
                         editor.putString("username", username)
                         editor.putString("userId", userId)
+                        editor.putLong("bestScore", bestScore)
                         editor.apply()
 
                         // Redirect to MainActivity
@@ -128,12 +133,64 @@ class AuthActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish() // Close the AuthActivity
                     } else {
-                        Snackbar.make(findViewById(android.R.id.content), "Error while logging in.", Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            findViewById(android.R.id.content),
+                            "Error while logging in.",
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
                     }
                 } else {
-                    Snackbar.make(findViewById(android.R.id.content), "Error while logging in.", Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Error while logging in.",
+                        Snackbar.LENGTH_LONG
+                    )
                         .show()
+                }
+            }
+        })
+    }
+
+    private fun profile() {
+        val client = OkHttpClient()
+        val url = "$apiUrl/profile" // Adjust the URL based on your API endpoints
+
+        val jwtToken = getJwtToken()
+
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("Authorization", "Bearer $jwtToken")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Error while fetching user profile.",
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+                if (response.isSuccessful) {
+                    val json = JSONObject(responseBody)
+                    val bestScore = json.optLong("bestScore")
+
+                    val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.remove("bestScore")
+                    editor.putLong("bestScore", bestScore)
+                    editor.apply()
+
+                } else {
+                    Snackbar.make(
+                        findViewById(android.R.id.content), "Error while logging in.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         })
@@ -146,15 +203,37 @@ class AuthActivity : AppCompatActivity() {
         editor.remove("jwtToken")
         editor.remove("username")
         editor.remove("userId")
+        editor.remove("bestScore")
         editor.apply()
 
-        Snackbar.make(findViewById(android.R.id.content), "Logged out successfully.", Snackbar.LENGTH_LONG)
-            .show()
+        Snackbar.make(
+            findViewById(android.R.id.content),
+            "Logged out successfully.",
+            Snackbar.LENGTH_LONG
+        ).show()
 
         // Redirect to MainActivity
         val intent = Intent(this@AuthActivity, MainActivity::class.java)
         startActivity(intent)
         finish() // Close the AuthActivity
+    }
+
+    private fun getJwtToken(): String? {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("jwtToken", null)
+    }
+
+    private fun getBestScore(): Long {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("bestScore", 0)
+    }
+
+    private fun getUsername(): String? {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", null)
     }
 
 }

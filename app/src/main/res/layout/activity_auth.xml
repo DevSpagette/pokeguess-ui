@@ -103,9 +103,10 @@
         android:text="Login" />
 
 
+    <!-- Connected as view -->
     <TextView
         android:id="@+id/usernameTextView"
-        style="@style/DefaultTextStyle"
+        style="@style/SubtitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_button"
@@ -113,15 +114,27 @@
         android:layout_marginTop="16dp"
         android:visibility="gone" />
 
+    <!-- Connected as view -->
+    <TextView
+        android:id="@+id/bestScoreTextView"
+        style="@style/DefaultTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
     <!-- Logout Button -->
     <Button
         android:id="@+id/logout_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameTextView"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_below="@id/bestScoreTextView"
+        style="@style/DefaultTextStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue_volc"
         android:text="Logout"
         android:visibility="gone" />
 
