@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.blue_volc)
 
         // Register the broadcast receiver
         val intentFilter = IntentFilter(ACTION_CLOSE_APP)

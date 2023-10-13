@@ -1,154 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/silver"
+    android:fillViewport="true"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        style="@style/TitleTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:text="PokeGuess" />
-
-    <ImageView
-        android:id="@+id/mainPageImage"
-        android:layout_width="216dp"
-        android:layout_height="216dp"
-        android:layout_marginTop="36dp"
-        android:layout_below="@id/titleTextView"
-        android:layout_centerHorizontal="true" />
-
-    <ImageButton
-        android:id="@+id/userButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_user_icon"
-        android:scaleType="fitCenter"/>
-
-    <LinearLayout
-        android:id="@+id/menuPageButtons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mainPageImage"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/classic_mode_button"
-            style="@style/SubtitleTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_volc"
-            android:text="@string/menu_page_classic_button"
-            android:textColor="@color/silver" />
-
-        <Button
-            android:id="@+id/challenge_mode_button"
-            style="@style/SubtitleTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_volc"
-            android:text="@string/menu_page_challenge_button"
-            android:textColor="@color/silver" />
-
-        <Button
-            android:id="@+id/leaderboard_button"
-            style="@style/SubtitleTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_volc"
-            android:text="@string/menu_page_leaderboard_button"
-            android:textColor="@color/silver" />
-
-        <Button
-            android:id="@+id/settings_button"
-            style="@style/SubtitleTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_volc"
-            android:text="@string/menu_page_settings_button"
-            android:textColor="@color/silver" />
-
-        <Button
-            android:id="@+id/quit_button"
-            style="@style/SubtitleTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_volc"
-            android:text="@string/menu_page_quit_button"
-            android:textColor="@color/orange_volc" />
-    </LinearLayout>
-
     <RelativeLayout
-        android:id="@+id/menuPageStatus"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
-        android:layout_below="@id/menuPageButtons"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/refreshButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_refresh" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/titleTextView"
+            style="@style/TitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/refreshButton"
-            android:layout_marginTop="-16dp">
+            android:layout_marginTop="25dp"
+            android:text="PokeGuess" />
 
-            <View
-                android:id="@+id/statusDot"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="4dp"
+        <ImageButton
+            android:id="@+id/userButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_user_icon" />
 
-                android:layout_toStartOf="@id/serverStatusText"
-                android:background="@drawable/red_dot" />
+        <ImageView
+            android:id="@+id/mainPageImage"
+            android:layout_width="216dp"
+            android:layout_height="216dp"
+            android:layout_below="@id/titleTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp" />
 
-            <TextView
-                android:id="@+id/serverStatusText"
+        <LinearLayout
+            android:id="@+id/menuPageButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mainPageImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/classic_mode_button"
+                style="@style/SubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:backgroundTint="@color/blue_volc"
+                android:text="@string/menu_page_classic_button"
+                android:textColor="@color/silver" />
+
+            <Button
+                android:id="@+id/challenge_mode_button"
+                style="@style/SubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/blue_volc"
+                android:text="@string/menu_page_challenge_button"
+                android:textColor="@color/silver" />
+
+            <Button
+                android:id="@+id/leaderboard_button"
+                style="@style/SubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/blue_volc"
+                android:text="@string/menu_page_leaderboard_button"
+                android:textColor="@color/silver" />
+
+            <Button
+                android:id="@+id/settings_button"
+                style="@style/SubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/blue_volc"
+                android:text="@string/menu_page_settings_button"
+                android:textColor="@color/silver" />
+
+            <Button
+                android:id="@+id/quit_button"
+                style="@style/SubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/blue_volc"
+                android:text="@string/menu_page_quit_button"
+                android:textColor="@color/orange_volc" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/menuPageStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/menuPageButtons"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/refreshButton"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_refresh" />
+
+            <LinearLayout
+                android:id="@+id/serverStatusTextLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="API status"
-                android:textColor="@color/black" />
-        </LinearLayout>
+                android:layout_below="@id/refreshButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-16dp"
+                android:layout_marginBottom="16dp">
+
+                <View
+                    android:id="@+id/statusDot"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:layout_toStartOf="@id/serverStatusText"
+                    android:background="@drawable/red_dot" />
+
+                <TextView
+                    android:id="@+id/serverStatusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="API status"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/credits"
+                style="@style/Credits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/serverStatusTextLayout"
+                android:text="@string/menu_page_credits" />
+        </RelativeLayout>
+
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/bottomTextView"
-        style="@style/Credits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/menu_page_credits" />
-
-</RelativeLayout>
+</ScrollView>

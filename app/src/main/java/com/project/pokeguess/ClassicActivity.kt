@@ -60,7 +60,7 @@ open class ClassicActivity : AppCompatActivity() {
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
 
-        rng = (1..GLOBAL.MAX).random()
+        rng = GLOBAL.generateRandomNumber()
 
         val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
         inputPokemon.setOnEditorActionListener { _, actionId, _ ->
