@@ -42,6 +42,7 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
+    implementation ("org.json:json:20210307")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
