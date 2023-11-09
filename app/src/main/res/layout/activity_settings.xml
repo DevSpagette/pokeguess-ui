@@ -31,7 +31,7 @@
         android:layout_below="@id/settings_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Generation Picker"
+        android:text="Pick your generations"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -44,7 +44,6 @@
 
         <!-- Row 1 -->
         <TableRow>
-
             <CheckBox
                 android:id="@+id/generation1_checkbox"
                 style="@style/DefaultTextStyle"
@@ -52,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen1" />
-
             <CheckBox
                 android:id="@+id/generation2_checkbox"
                 style="@style/DefaultTextStyle"
@@ -63,7 +61,6 @@
 
         <!-- Row 2 -->
         <TableRow>
-
             <CheckBox
                 android:id="@+id/generation3_checkbox"
                 style="@style/DefaultTextStyle"
@@ -71,7 +68,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen3" />
-
             <CheckBox
                 android:id="@+id/generation4_checkbox"
                 style="@style/DefaultTextStyle"
@@ -82,7 +78,6 @@
 
         <!-- Row 3 -->
         <TableRow>
-
             <CheckBox
                 android:id="@+id/generation5_checkbox"
                 style="@style/DefaultTextStyle"
@@ -90,7 +85,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen5" />
-
             <CheckBox
                 android:id="@+id/generation6_checkbox"
                 style="@style/DefaultTextStyle"
@@ -101,7 +95,6 @@
 
         <!-- Row 4 -->
         <TableRow>
-
             <CheckBox
                 android:id="@+id/generation7_checkbox"
                 style="@style/DefaultTextStyle"
@@ -109,24 +102,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen7" />
-
             <CheckBox
                 android:id="@+id/generation8_checkbox"
                 style="@style/DefaultTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+
                 android:text="gen8" />
         </TableRow>
 
         <!-- Row 5 -->
         <TableRow>
-
             <CheckBox
                 android:id="@+id/generation9_checkbox"
                 style="@style/DefaultTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:text="gen9" />
         </TableRow>
     </TableLayout>

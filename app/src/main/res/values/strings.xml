@@ -16,6 +16,7 @@
     <string name="menu_page_challenge_button">Challenge</string>
     <string name="menu_page_leaderboard_button">Leaderboard</string>
     <string name="menu_page_settings_button">Settings</string>
+    <string name="menu_page_api_status">API status</string>
     <string name="menu_page_quit_button">Quit</string>
     <string name="menu_page_credits">Made by Ahmed MOUSSA &amp; Kévin LEGENDRE</string>
 
@@ -41,7 +42,8 @@
     <!-- Leader-board -->
     <!--==============-->
     <string name="leaderboard_title">PokeGuess Leaderboard</string>
-    <string name="leaderboard_description">Top 100 challengers</string>
+    <string name="leaderboard_challenge_description">Top 100 challengers</string>
+    <string name="leaderboard_classic_description">Top 100 masters</string>
     <string name="leaderboard_player_name">Name:</string>
     <string name="leaderboard_player_score">Score:</string>
     <string name="leaderboard_player_rank">Rank:</string>

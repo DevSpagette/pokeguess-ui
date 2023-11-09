@@ -43,7 +43,6 @@ class SettingsActivity : AppCompatActivity() {
                 val generation = checkBox.text.toString()
 
                 if (isChecked) {
-                    // Update the SharedPreferences with the new state
                     sharedPreferences.edit().putBoolean(generation, true).apply()
                 } else {
                     // Ensure at least one generation is selected
@@ -51,7 +50,6 @@ class SettingsActivity : AppCompatActivity() {
                         // Prevent unchecking if only one is checked
                         checkBox.isChecked = true
                     } else {
-                        // Update the SharedPreferences with the new state
                         sharedPreferences.edit().putBoolean(generation, false).apply()
                     }
                 }

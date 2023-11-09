@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import okhttp3.Call
 import okhttp3.Callback
@@ -93,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val handler = Handler(Looper.getMainLooper())
-    private val imageSwapDelay = 3000L // Delay in milliseconds for image change
+    private val imageSwapDelay = 3000L
     private val homeImage = mutableListOf<String>()
     private val homeImageName = mutableListOf<String>()
 
@@ -112,7 +111,7 @@ class MainActivity : AppCompatActivity() {
     private val closeAppReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_CLOSE_APP) {
-                finishAffinity() // Finish all activities in the app
+                finishAffinity()
             }
         }
     }
@@ -137,9 +136,6 @@ class MainActivity : AppCompatActivity() {
 
         // load settings
         loadSettings()
-        for (i in 0 until GLOBAL.checkedGens.size) {
-            println("Generation ${i+1}: ${GLOBAL.checkedGens[i]}")
-        }
 
         // Set a click listener for the "Go to Leaderboard" button
         val userButton = findViewById<ImageButton>(R.id.userButton)
@@ -210,11 +206,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        leaderboardButton.setOnClickListener(View.OnClickListener {
+        leaderboardButton.setOnClickListener{
             // Create an Intent to navigate to LeaderboardActivity
             val intent = Intent(this, LeaderboardActivity::class.java)
             startActivity(intent)
-        })
+        }
 
         settingsButton.setOnClickListener {
             // Create an Intent to navigate to LeaderboardActivity
@@ -241,7 +237,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             status = "..."
-            serverStatusText.text = "API status$status"
+            serverStatusText.text = "Checking API status$status"
             serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
         }
 
@@ -263,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     e.printStackTrace()
                     runOnUiThread {
-                        status = "Asleep"
+                        status = "asleep"
                         serverStatusText.text = "API status: $status"
                         serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
                     }
@@ -291,10 +287,10 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient()
 
         for (i in 1..10){
-            rng = (1..1006).random()
+
+            rng = (1..GLOBAL.MAX).random()
             val imageUrl = "$apiUrl/sprite/$rng"
             val imageInfo = "$apiUrl/info/$rng"
-
 
 
             var nameUrl = imageInfo
@@ -313,7 +309,8 @@ class MainActivity : AppCompatActivity() {
                         if (response.code == 200) {
                             val responseBody = response.body?.string()
                             val jsonObject = JSONObject(responseBody)
-                            homeImageName.add(jsonObject.getString("name"))
+
+                            homeImageName.add(jsonObject.getString("name").replaceFirstChar { it.uppercaseChar() })
                             homeImage.add(imageUrl)
 
                         } else {

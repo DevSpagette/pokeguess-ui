@@ -2,13 +2,17 @@ package com.project.pokeguess
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
 import org.json.JSONObject
@@ -20,6 +24,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var loginButton: Button
     private lateinit var logoutButton: Button
+    private lateinit var progressBar: ProgressBar
 
     private val apiUrl = "https://pokeguess-api.onrender.com/user"
 
@@ -31,6 +36,7 @@ class AuthActivity : AppCompatActivity() {
         passwordInput = findViewById(R.id.password_input)
         loginButton = findViewById(R.id.login_button)
         logoutButton = findViewById(R.id.logout_button)
+        progressBar = findViewById(R.id.progressBar)
 
         val usernameTextView = findViewById<TextView>(R.id.usernameTextView)
         val bestScoreTextView = findViewById<TextView>(R.id.bestScoreTextView)
@@ -85,6 +91,14 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun login(username: String, password: String) {
+
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+
+        runOnUiThread {
+            progressBar.visibility = View.VISIBLE
+        }
+
         val client = OkHttpClient()
         val url = "$apiUrl/login" // Adjust the URL based on your API endpoints
 
@@ -100,6 +114,9 @@ class AuthActivity : AppCompatActivity() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    progressBar.visibility = View.GONE
+                }
                 Snackbar.make(
                     findViewById(android.R.id.content),
                     "Error while logging in.",
@@ -110,6 +127,9 @@ class AuthActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
+                runOnUiThread {
+                    progressBar.visibility = View.GONE
+                }
                 if (response.isSuccessful) {
                     val json = JSONObject(responseBody)
                     val token = json.optString("token")
@@ -197,6 +217,9 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun logout() {
+        runOnUiThread {
+            progressBar.visibility = View.VISIBLE
+        }
         // Remove the token from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
