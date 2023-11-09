@@ -3,11 +3,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PokeGuess" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/blue_volc</item>
     </style>
 
     <style name="Theme.PokeGuess" parent="Base.Theme.PokeGuess">
         <item name="android:statusBarColor">@color/blue_volc</item>
+        <item name="colorPrimary">@color/orange_volc</item>
     </style>
 
     <style name="DefaultTextStyle">
