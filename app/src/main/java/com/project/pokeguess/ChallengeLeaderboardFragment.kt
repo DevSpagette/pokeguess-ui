@@ -1,11 +1,13 @@
 package com.project.pokeguess
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -22,7 +24,7 @@ import java.io.IOException
 import java.lang.Integer.min
 import androidx.fragment.app.Fragment
 
-class ClassicLeaderboardFragment : Fragment() {
+class ChallengeLeaderboardFragment : Fragment() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val maxEntries = 100
@@ -32,10 +34,10 @@ class ClassicLeaderboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_classic, container, false)
+        val view = inflater.inflate(R.layout.fragment_challenge, container, false)
 
         // Here, you can initialize your views, set up the leaderboard, and handle UI logic.
-        val leaderboardTable = view.findViewById<TableLayout>(R.id.leaderboard_classic_table)
+        val leaderboardTable = view.findViewById<TableLayout>(R.id.leaderboard_challenge_table)
         progressBar = view.findViewById(R.id.progressBar)
 
         // Update UI on the main thread

@@ -1,158 +1,49 @@
 package com.project.pokeguess
 
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TableLayout
-import android.widget.TableRow
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.ResponseBody
-import org.json.JSONObject
-import java.io.IOException
-import java.lang.Integer.min
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class LeaderboardActivity : AppCompatActivity() {
-
-    private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
-    private val maxEntries = 100
-    private lateinit var progressBar: ProgressBar
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leaderboard)
 
-        val leaderboardTable = findViewById<TableLayout>(R.id.leaderboard_table)
-        progressBar = findViewById(R.id.progressBar)
+        viewPager = findViewById(R.id.viewPager)
+        tabLayout = findViewById(R.id.tabLayout)
 
-        runOnUiThread {
-            progressBar.visibility = View.VISIBLE
-        }
+        viewPager.adapter = LeaderboardPagerAdapter(this)
 
-        // Create an array of column titles
-        val columnTitles = arrayOf("Rank", "Name", "Score")
-        val columnTitleRow = TableRow(this)
-
-        // array headers
-        for (titleText in columnTitles) {
-            val title = TextView(this,  null, 0, R.style.DefaultTextStyle)
-            title.text = titleText
-            title.setTextColor(Color.BLACK)
-            title.background = ContextCompat.getDrawable(this, R.drawable.table_row_background)
-            title.layoutParams = TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT
-            )
-            val params = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
-            title.layoutParams = params
-            title.setPadding(16, 16, 16, 16)
-            title.setTypeface(null, Typeface.BOLD)
-
-            columnTitleRow.addView(title)
-        }
-
-        // Add the columnTitleRow to the TableLayout
-        leaderboardTable.addView(columnTitleRow)
-
-        // Use a callback to fetch leaderboard entries
-        fetchLeaderboardEntries { entries ->
-            runOnUiThread {
-                // Add leaderboard entries to the TableLayout
-                for (entry in entries) {
-                    val row = TableRow(this@LeaderboardActivity)
-
-                    val cellTexts =
-                        listOf(entry.rank.toString(), entry.name, entry.score.toString())
-
-                    for (text in cellTexts) {
-                        val cell = TextView(this@LeaderboardActivity,  null, 0, R.style.DefaultTextStyle)
-                        cell.text = text
-                        cell.setTextColor(Color.BLACK)
-                        cell.background = ContextCompat.getDrawable(
-                            this@LeaderboardActivity,
-                            R.drawable.table_row_background
-                        )
-                        cell.layoutParams = TableRow.LayoutParams(
-                            TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT
-                        )
-                        val params = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
-                        cell.layoutParams = params
-                        cell.setPadding(16, 16, 16, 16)
-                        cell.textSize = 15F
-                        cell.setTypeface(null, Typeface.NORMAL)
-                        row.addView(cell)
-                    }
-
-                    // Add the TableRow to the TableLayout
-                    leaderboardTable.addView(row)
-                }
-                progressBar.visibility = View.GONE
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Classic"
+                1 -> "Challenge"
+                else -> ""
             }
-        }
-
-        // Back to the main activity button
-        val backButton = findViewById<ImageButton>(R.id.back_to_main_button)
-        backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+        }.attach()
     }
 
-    private fun fetchLeaderboardEntries(callback: (List<LeaderboardEntry>) -> Unit) {
-        val client = OkHttpClient()
-        val url = "$apiUrl/leaderboard"
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val entries = mutableListOf<LeaderboardEntry>()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                // Handle network request failure here
-                e.printStackTrace()
-                callback(emptyList()) // Return an empty list in case of failure
+    private inner class LeaderboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int {
+            return 2
+        }
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> ClassicLeaderboardFragment()
+                1 -> ChallengeLeaderboardFragment()
+                else -> ChallengeLeaderboardFragment()
             }
-
-            override fun onResponse(call: Call, response: Response) {
-                val responseBody: ResponseBody? = response.body
-                val json = responseBody?.string()
-
-                if (json != null) {
-                    val jsonObject = JSONObject(json)
-
-                    if (jsonObject.has("leaderboard")) {
-                        val jsonArray = jsonObject.getJSONArray("leaderboard")
-
-                        for (i in 0 until min(maxEntries, jsonArray.length())) {
-                            val entryObject = jsonArray.getJSONObject(i)
-                            val username = entryObject.getJSONObject("userId").getString("username")
-                            val score = entryObject.getLong("score")
-
-                            entries.add(LeaderboardEntry(username, score.toString(), i + 1))
-                        }
-
-                        for (i in entries.size until maxEntries) {
-                            entries.add(LeaderboardEntry("---", "---", i + 1))
-                        }
-                    }
-                }
-
-                callback(entries)
-            }
-        })
+        }
     }
-
 }
