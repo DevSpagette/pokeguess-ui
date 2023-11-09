@@ -14,7 +14,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import okhttp3.Call
 import okhttp3.Callback
@@ -25,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.random.Random
+import org.json.JSONObject
 
 object GLOBAL {
     var GEN1Checked = true
@@ -91,10 +91,13 @@ class MainActivity : AppCompatActivity() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val handler = Handler(Looper.getMainLooper())
-    private val imageSwapDelay = 3000L // Delay in milliseconds for image change
+    private val imageSwapDelay = 3000L
     private val homeImage = mutableListOf<String>()
+    private val homeImageName = mutableListOf<String>()
 
     private lateinit var homePokemonImageView: ImageView
+    private lateinit var homePokemonNameView: TextView
+
     private var rng = 0
     private var currentIndex = 0
     private var jwtToken: String? = null
@@ -107,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     private val closeAppReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_CLOSE_APP) {
-                finishAffinity() // Finish all activities in the app
+                finishAffinity()
             }
         }
     }
@@ -120,9 +123,11 @@ class MainActivity : AppCompatActivity() {
         val intentFilter = IntentFilter(ACTION_CLOSE_APP)
         registerReceiver(closeAppReceiver, intentFilter)
 
-        homePokemonImageView = findViewById(R.id.mainPageImage)
+        generatePokemonSprite()
 
-        homeImage.addAll(generatePokemonSprite())
+        homePokemonImageView = findViewById(R.id.mainPageImage)
+        homePokemonNameView = findViewById(R.id.mainPageImageName)
+
         swapImagesPeriodically()
 
         // Retrieve the jwtToken from SharedPreferences
@@ -130,9 +135,6 @@ class MainActivity : AppCompatActivity() {
 
         // load settings
         loadSettings()
-        for (i in 0 until GLOBAL.checkedGens.size) {
-            println("Generation ${i+1}: ${GLOBAL.checkedGens[i]}")
-        }
 
         // Set a click listener for the "Go to Leaderboard" button
         val userButton = findViewById<ImageButton>(R.id.userButton)
@@ -203,11 +205,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        leaderboardButton.setOnClickListener(View.OnClickListener {
+        leaderboardButton.setOnClickListener{
             // Create an Intent to navigate to LeaderboardActivity
             val intent = Intent(this, LeaderboardActivity::class.java)
             startActivity(intent)
-        })
+        }
 
         settingsButton.setOnClickListener {
             // Create an Intent to navigate to LeaderboardActivity
@@ -234,7 +236,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             status = "..."
-            serverStatusText.text = "API status$status"
+            serverStatusText.text = "Checking API status$status"
             serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
         }
 
@@ -256,7 +258,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     e.printStackTrace()
                     runOnUiThread {
-                        status = "Asleep"
+                        status = "asleep"
                         serverStatusText.text = "API status: $status"
                         serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
                     }
@@ -279,41 +281,70 @@ class MainActivity : AppCompatActivity() {
         return sharedPreferences.getString("jwtToken", null)
     }
 
-    private fun generatePokemonSprite(): MutableList<String> {
-        val homeImageView = findViewById<ImageView>(R.id.mainPageImage)
-        val list = mutableListOf<String>()
+    private fun generatePokemonSprite(){
 
-        for (i in 1..10) {
+        val client = OkHttpClient()
+
+        for (i in 1..10){
             rng = (1..GLOBAL.MAX).random()
             val imageUrl = "$apiUrl/sprite/$rng"
+            val imageInfo = "$apiUrl/info/$rng"
 
-            list.add(imageUrl)
+            var nameUrl = imageInfo
+            val request = Request.Builder()
+                .url(nameUrl)
+                .get()
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+
+                    try {
+                        if (response.code == 200) {
+                            val responseBody = response.body?.string()
+                            val jsonObject = JSONObject(responseBody)
+                            homeImageName.add(jsonObject.getString("name").replaceFirstChar { it.uppercaseChar() })
+                            homeImage.add(imageUrl)
+                        } else {
+                            // Handle the case where the response code is not 200 (e.g., an error).
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            })
         }
-        return list
     }
 
     private fun swapImagesPeriodically() {
         handler.post(object : Runnable {
             override fun run() {
-                // Create a fade-out animation
-                val fadeOutAnimation =
-                    AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
-                homePokemonImageView.startAnimation(fadeOutAnimation)
-                handler.postDelayed({
-                    // Create a fade-in animation
-                    val fadeInAnimation =
-                        AnimationUtils.loadAnimation(applicationContext, R.anim.fade_animation)
-                    homePokemonImageView.startAnimation(fadeInAnimation)
+                if (homeImage.isNotEmpty() && homeImageName.isNotEmpty()) {
+                    // Create a fade-out animation
+                    val fadeOutAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
+                    homePokemonImageView.startAnimation(fadeOutAnimation)
+                    homePokemonNameView.startAnimation(fadeOutAnimation)
 
-                    // Update the image source
-                    runOnUiThread {
-                        Glide.with(this@MainActivity).load(homeImage[currentIndex])
-                            .into(homePokemonImageView)
-                    }
+                    handler.postDelayed({
+                        // Create a fade-in animation
+                        val fadeInAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_animation)
+                        homePokemonImageView.startAnimation(fadeInAnimation)
+                        homePokemonNameView.startAnimation(fadeInAnimation)
 
-                    // Increment the index, or reset if it exceeds the array length
-                    currentIndex = (currentIndex + 1) % homeImage.size
-                }, fadeOutAnimation.duration)
+                        // Update the image source
+                        runOnUiThread {
+                            Glide.with(this@MainActivity).load(homeImage[currentIndex])
+                                .into(homePokemonImageView)
+                            homePokemonNameView.text = homeImageName[currentIndex]
+                        }
+
+                        // Increment the index, or reset if it exceeds the array length
+                        currentIndex = (currentIndex + 1) % homeImage.size
+                    }, fadeOutAnimation.duration)
+                }
                 // Schedule the next image swap
                 handler.postDelayed(this, imageSwapDelay)
             }
