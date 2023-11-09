@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -24,12 +26,18 @@ class LeaderboardActivity : AppCompatActivity() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val maxEntries = 100
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leaderboard)
 
         val leaderboardTable = findViewById<TableLayout>(R.id.leaderboard_table)
+        progressBar = findViewById(R.id.progressBar)
+
+        runOnUiThread {
+            progressBar.visibility = View.VISIBLE
+        }
 
         // Create an array of column titles
         val columnTitles = arrayOf("Rank", "Name", "Score")
@@ -89,6 +97,7 @@ class LeaderboardActivity : AppCompatActivity() {
                     // Add the TableRow to the TableLayout
                     leaderboardTable.addView(row)
                 }
+                progressBar.visibility = View.GONE
             }
         }
 

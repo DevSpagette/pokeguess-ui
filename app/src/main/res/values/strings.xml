@@ -42,7 +42,8 @@
     <!-- Leader-board -->
     <!--==============-->
     <string name="leaderboard_title">PokeGuess Leaderboard</string>
-    <string name="leaderboard_description">Top 100 challengers</string>
+    <string name="leaderboard_challenge_description">Top 100 challengers</string>
+    <string name="leaderboard_classic_description">Top 100 masters</string>
     <string name="leaderboard_player_name">Name:</string>
     <string name="leaderboard_player_score">Score:</string>
     <string name="leaderboard_player_rank">Rank:</string>

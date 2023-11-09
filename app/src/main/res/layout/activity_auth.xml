@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     android:background="@color/silver">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/blue_volc"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
     <!-- Button to redirect to the main activity (Top-left corner) -->
     <ImageButton
         android:id="@+id/back_to_main_button"
