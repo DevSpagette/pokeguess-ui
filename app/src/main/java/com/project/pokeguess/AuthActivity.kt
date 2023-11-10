@@ -2,7 +2,6 @@ package com.project.pokeguess
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -12,7 +11,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
 import org.json.JSONObject
@@ -39,6 +37,7 @@ class AuthActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
 
         val usernameTextView = findViewById<TextView>(R.id.usernameTextView)
+        val bestMasterTextView = findViewById<TextView>(R.id.bestMasterTextView)
         val bestScoreTextView = findViewById<TextView>(R.id.bestScoreTextView)
 
         // Check if jwtToken is present in SharedPreferences
@@ -51,6 +50,7 @@ class AuthActivity : AppCompatActivity() {
             loginButton.visibility = View.VISIBLE
             logoutButton.visibility = View.GONE
             usernameTextView.visibility = View.GONE
+            bestMasterTextView.visibility = View.GONE
             bestScoreTextView.visibility = View.GONE
         } else {
             profile()
@@ -60,15 +60,18 @@ class AuthActivity : AppCompatActivity() {
             loginButton.visibility = View.GONE
             logoutButton.visibility = View.VISIBLE
             usernameTextView.visibility = View.VISIBLE
+            bestMasterTextView.visibility = View.VISIBLE
             bestScoreTextView.visibility = View.VISIBLE
 
             // You can also show the username of the current user (fetch it from your server)
             val username = getUsername()
             val bestScore = getBestScore()
+            val bestMaster = getBestMaster()
 
             if (username != null) {
                 usernameTextView.text = "Logged in as: $username"
-                bestScoreTextView.text = "Best score : $bestScore"
+                bestMasterTextView.text = "Best score (Classic) : $bestMaster"
+                bestScoreTextView.text = "Best score (Challenge) : $bestScore"
             }
         }
 
@@ -135,6 +138,7 @@ class AuthActivity : AppCompatActivity() {
                     val token = json.optString("token")
                     val userId = json.optString("userId")
                     val username = json.optString("username")
+                    val bestMaster = json.optLong("bestMaster")
                     val bestScore = json.optLong("bestScore")
 
                     if (!token.isNullOrEmpty()) {
@@ -145,6 +149,7 @@ class AuthActivity : AppCompatActivity() {
                         editor.putString("jwtToken", token)
                         editor.putString("username", username)
                         editor.putString("userId", userId)
+                        editor.putLong("bestMaster", bestMaster)
                         editor.putLong("bestScore", bestScore)
                         editor.apply()
 
@@ -199,11 +204,14 @@ class AuthActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val json = JSONObject(responseBody)
                     val bestScore = json.optLong("bestScore")
+                    val bestMaster = json.optLong("bestMaster")
 
                     val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.remove("bestScore")
+                    editor.remove("bestMaster")
                     editor.putLong("bestScore", bestScore)
+                    editor.putLong("bestMaster", bestMaster)
                     editor.apply()
 
                 } else {
@@ -227,6 +235,7 @@ class AuthActivity : AppCompatActivity() {
         editor.remove("username")
         editor.remove("userId")
         editor.remove("bestScore")
+        editor.remove("bestMaster")
         editor.apply()
 
         Snackbar.make(
@@ -248,13 +257,19 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun getBestScore(): Long {
-        // Retrieve the jwtToken from SharedPreferences
+        // Retrieve the best score (challenge) from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getLong("bestScore", 0)
     }
 
+    private fun getBestMaster(): Long {
+        // Retrieve the best score (classic) from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("bestMaster", 0)
+    }
+
     private fun getUsername(): String? {
-        // Retrieve the jwtToken from SharedPreferences
+        // Retrieve the username from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getString("username", null)
     }

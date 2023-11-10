@@ -76,7 +76,7 @@ class ClassicLeaderboardFragment : Fragment() {
                     val row = TableRow(requireContext())
 
                     val cellTexts =
-                        listOf(entry.rank.toString(), entry.name, entry.score.toString())
+                        listOf(entry.rank.toString(), entry.name, entry.score)
 
                     for (text in cellTexts) {
                         val cell = TextView(requireContext(), null, 0, R.style.DefaultTextStyle)
@@ -111,7 +111,7 @@ class ClassicLeaderboardFragment : Fragment() {
 
     private fun fetchLeaderboardEntries(callback: (List<LeaderboardEntry>) -> Unit) {
         val client = OkHttpClient()
-        val url = "$apiUrl/leaderboard"
+        val url = "$apiUrl/leaderboard/classic"
         val request = Request.Builder()
             .url(url)
             .get()
@@ -121,9 +121,8 @@ class ClassicLeaderboardFragment : Fragment() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                // Handle network request failure here
                 e.printStackTrace()
-                callback(emptyList()) // Return an empty list in case of failure
+                callback(emptyList())
             }
 
             override fun onResponse(call: Call, response: Response) {

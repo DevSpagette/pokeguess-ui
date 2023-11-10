@@ -78,7 +78,7 @@ class ChallengeLeaderboardFragment : Fragment() {
                     val row = TableRow(requireContext())
 
                     val cellTexts =
-                        listOf(entry.rank.toString(), entry.name, entry.score.toString())
+                        listOf(entry.rank.toString(), entry.name, entry.score)
 
                     for (text in cellTexts) {
                         val cell = TextView(requireContext(), null, 0, R.style.DefaultTextStyle)

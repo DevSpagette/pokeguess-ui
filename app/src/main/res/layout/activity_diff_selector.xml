@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver">
+
+    <!-- Button to redirect to the main activity (Top-left corner) -->
+    <ImageButton
+        android:id="@+id/back_to_main_button"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:id="@+id/diff_selector_title"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/back_to_main_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="128dp"
+        android:text="@string/diff_selector_title" />
+
+    <!-- Linear Layout for Buttons -->
+    <LinearLayout
+        android:id="@+id/linear_layout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diff_selector_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="256dp"
+        android:orientation="vertical">
+
+        <!-- Easy Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
+
+            <Button
+                android:id="@+id/easyButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/DefaultTextStyle"
+                android:backgroundTint="@color/sky_volc"
+                android:text="Easy"
+                android:textColor="@color/white_volc" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hearts: 5"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <!-- Normal Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
+
+            <Button
+                android:id="@+id/normalButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/DefaultTextStyle"
+                android:backgroundTint="@color/blue_volc"
+                android:text="Normal"
+                android:textColor="@color/silver"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hearts: 3"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <!-- Master Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/masterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/DefaultTextStyle"
+                android:backgroundTint="@color/orange_volc"
+                android:textColor="@color/silver"
+                android:text="Master" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hearts: 1"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

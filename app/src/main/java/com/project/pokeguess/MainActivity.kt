@@ -49,42 +49,58 @@ object GLOBAL {
     private val GEN8 = 810..905
     private val GEN9 = 906..1017
 
+    private var selectedNumbers: MutableList<Int> = mutableListOf()
+    private val classicModeNumbers = (1..MAX).toMutableList()
+
     val checkedGens = arrayOf(
         GEN1Checked, GEN2Checked, GEN3Checked, GEN4Checked, GEN5Checked,
         GEN6Checked, GEN7Checked, GEN8Checked, GEN9Checked
     )
 
     // Function to generate a random number exclusively within the specified ranges
-    fun generateRandomNumber(): Int {
-        val selectedRanges = mutableListOf<IntRange>()
+    private fun shuffleSelectedNumbers() {
+        selectedNumbers.clear()
+
         for (i in checkedGens.indices) {
             if (checkedGens[i]) {
                 when (i) {
-                    0 -> selectedRanges.add(GEN1)
-                    1 -> selectedRanges.add(GEN2)
-                    2 -> selectedRanges.add(GEN3)
-                    3 -> selectedRanges.add(GEN4)
-                    4 -> selectedRanges.add(GEN5)
-                    5 -> selectedRanges.add(GEN6)
-                    6 -> selectedRanges.add(GEN7)
-                    7 -> selectedRanges.add(GEN8)
-                    8 -> selectedRanges.add(GEN9)
+                    0 -> selectedNumbers.addAll(GEN1.toList())
+                    1 -> selectedNumbers.addAll(GEN2.toList())
+                    2 -> selectedNumbers.addAll(GEN3.toList())
+                    3 -> selectedNumbers.addAll(GEN4.toList())
+                    4 -> selectedNumbers.addAll(GEN5.toList())
+                    5 -> selectedNumbers.addAll(GEN6.toList())
+                    6 -> selectedNumbers.addAll(GEN7.toList())
+                    7 -> selectedNumbers.addAll(GEN8.toList())
+                    8 -> selectedNumbers.addAll(GEN9.toList())
                 }
             }
         }
 
-        if (selectedRanges.isEmpty()) {
+        if (selectedNumbers.isEmpty()) {
             throw IllegalArgumentException("At least one generation must be selected.")
         }
 
-        while (true) {
-            val randomIndex = Random.nextInt(selectedRanges.size)
-            val selectedRange = selectedRanges[randomIndex]
-            val result = Random.nextInt(selectedRange.first, selectedRange.last + 1)
-            if (result != 0) {
-                return result
-            }
+        // Shuffle the list of selected numbers
+        selectedNumbers.shuffle()
+    }
+
+    // Function to generate a unique random number for challenge mode
+    fun generateRandomNumber(): Int {
+        if (selectedNumbers.isEmpty()) {
+            shuffleSelectedNumbers()
         }
+        return selectedNumbers.removeAt(0)
+    }
+
+    // Function to generate a unique random number within the range of 1 to MAX for classic mode
+    fun generateUniqueRandomNumber(): Int {
+        if (classicModeNumbers.isEmpty()) {
+            throw IllegalArgumentException("All numbers in classic mode have been used.")
+        }
+
+        classicModeNumbers.shuffle()
+        return classicModeNumbers.removeAt(0)
     }
 }
 
@@ -92,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val handler = Handler(Looper.getMainLooper())
-    private val imageSwapDelay = 3000L
+    private var imageSwapDelay = 3000L
     private val homeImage = mutableListOf<String>()
     private val homeImageName = mutableListOf<String>()
 
@@ -138,11 +154,11 @@ class MainActivity : AppCompatActivity() {
         loadSettings()
 
         // Set a click listener for the "Go to Leaderboard" button
-        val userButton = findViewById<ImageButton>(R.id.userButton)
+        val userButton = findViewById<ImageButton>(R.id.user_button)
         val classicButton = findViewById<Button>(R.id.classic_mode_button)
         val challengeButton = findViewById<Button>(R.id.challenge_mode_button)
         val leaderboardButton = findViewById<Button>(R.id.leaderboard_button)
-        val settingsButton = findViewById<Button>(R.id.settings_button)
+        val settingsButton = findViewById<ImageButton>(R.id.settings_button)
         val quitButton = findViewById<Button>(R.id.quit_button)
 
         val refreshButton = findViewById<ImageButton>(R.id.refreshButton)
@@ -179,18 +195,8 @@ class MainActivity : AppCompatActivity() {
 
         classicButton.setOnClickListener {
             if (jwtToken != null) {
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Classic mod not available switch to challenge",
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction("Log In") {
-                        val intent = Intent(this, AuthActivity::class.java)
-                        startActivity(intent)
-                    }
-                    .show()
-                // Create an Intent to navigate to ChallengeActivity
-                val intent = Intent(this, ChallengeActivity::class.java)
+                // Create an Intent to navigate to diff selector then to ChallengeActivity
+                val intent = Intent(this, DiffSelectorActivity::class.java)
                 startActivity(intent)
             } else {
                 Snackbar.make(
@@ -206,7 +212,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        leaderboardButton.setOnClickListener{
+        leaderboardButton.setOnClickListener {
             // Create an Intent to navigate to LeaderboardActivity
             val intent = Intent(this, LeaderboardActivity::class.java)
             startActivity(intent)
@@ -282,11 +288,11 @@ class MainActivity : AppCompatActivity() {
         return sharedPreferences.getString("jwtToken", null)
     }
 
-    private fun generatePokemonSprite(){
+    private fun generatePokemonSprite() {
 
         val client = OkHttpClient()
 
-        for (i in 1..10){
+        for (i in 1..10) {
 
             rng = (1..GLOBAL.MAX).random()
             val imageUrl = "$apiUrl/sprite/$rng"
@@ -310,11 +316,11 @@ class MainActivity : AppCompatActivity() {
                             val responseBody = response.body?.string()
                             val jsonObject = JSONObject(responseBody)
 
-                            homeImageName.add(jsonObject.getString("name").replaceFirstChar { it.uppercaseChar() })
+                            homeImageName.add(
+                                jsonObject.getString("name")
+                                    .replaceFirstChar { it.uppercaseChar() })
                             homeImage.add(imageUrl)
 
-                        } else {
-                            // Handle the case where the response code is not 200 (e.g., an error).
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -329,13 +335,15 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 if (homeImage.isNotEmpty() && homeImageName.isNotEmpty()) {
                     // Create a fade-out animation
-                    val fadeOutAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
+                    val fadeOutAnimation =
+                        AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_animation)
                     homePokemonImageView.startAnimation(fadeOutAnimation)
                     homePokemonNameView.startAnimation(fadeOutAnimation)
 
                     handler.postDelayed({
                         // Create a fade-in animation
-                        val fadeInAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_animation)
+                        val fadeInAnimation =
+                            AnimationUtils.loadAnimation(applicationContext, R.anim.fade_animation)
                         homePokemonImageView.startAnimation(fadeInAnimation)
                         homePokemonNameView.startAnimation(fadeInAnimation)
 
@@ -355,7 +363,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

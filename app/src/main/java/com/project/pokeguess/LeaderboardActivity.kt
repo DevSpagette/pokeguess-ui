@@ -1,11 +1,9 @@
 package com.project.pokeguess
 
-import android.content.res.ColorStateList
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -32,6 +30,12 @@ class LeaderboardActivity : AppCompatActivity() {
                 else -> ""
             }
         }.attach()
+
+        // Back to the main activity button
+        val backButton = findViewById<ImageButton>(R.id.back_to_main_button)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private inner class LeaderboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {

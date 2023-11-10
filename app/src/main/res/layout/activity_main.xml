@@ -17,19 +17,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="16dp"
             android:text="PokeGuess" />
 
         <ImageButton
-            android:id="@+id/userButton"
+            android:id="@+id/user_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_user_icon" />
+
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/user_button"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_settings" />
 
         <LinearLayout
             android:id="@+id/menuPageImage"
@@ -67,9 +79,9 @@
                 style="@style/SubtitleTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/blue_volc"
+                android:backgroundTint="@color/sky_volc"
                 android:text="@string/menu_page_classic_button"
-                android:textColor="@color/silver" />
+                android:textColor="@color/white_volc" />
 
             <Button
                 android:id="@+id/challenge_mode_button"
@@ -77,9 +89,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="@color/blue_volc"
+                android:backgroundTint="@color/orange_volc"
                 android:text="@string/menu_page_challenge_button"
-                android:textColor="@color/silver" />
+                android:textColor="@color/white_volc" />
 
             <Button
                 android:id="@+id/leaderboard_button"
@@ -89,17 +101,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/blue_volc"
                 android:text="@string/menu_page_leaderboard_button"
-                android:textColor="@color/silver" />
-
-            <Button
-                android:id="@+id/settings_button"
-                style="@style/SubtitleTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/blue_volc"
-                android:text="@string/menu_page_settings_button"
-                android:textColor="@color/silver" />
+                android:textColor="@color/white_volc" />
 
             <Button
                 android:id="@+id/quit_button"
@@ -107,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="@color/blue_volc"
+                android:backgroundTint="@color/white_volc"
                 android:text="@string/menu_page_quit_button"
                 android:textColor="@color/orange_volc" />
         </LinearLayout>

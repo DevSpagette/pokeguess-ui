@@ -31,11 +31,13 @@
         android:layout_below="@id/settings_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Pick your generations"
+        android:textAlignment="center"
+        android:text="Pick your generations \n(Challenge mode)"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TableLayout
+        android:id="@+id/settings_generationPicker_genArray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/settings_generationPicker_textView"
@@ -107,7 +109,6 @@
                 style="@style/DefaultTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:text="gen8" />
         </TableRow>
 
@@ -121,6 +122,32 @@
                 android:layout_marginEnd="16dp"
                 android:text="gen9" />
         </TableRow>
+
     </TableLayout>
+
+    <TextView
+        android:id="@+id/settings_restart_textView"
+        style="@style/DefaultTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_generationPicker_genArray"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="128dp"
+        android:text="@string/settings_warning"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray" />
+
+    <Button
+        android:id="@+id/saveButton"
+        style="@style/SubtitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settings_restart_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue_volc"
+        android:textColor="@color/white_volc"
+        android:text="@string/settings_save_button" />
 
 </RelativeLayout>

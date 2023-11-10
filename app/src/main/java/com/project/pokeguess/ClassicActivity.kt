@@ -17,6 +17,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.*
 import java.io.IOException
+import java.util.Random
 
 open class ClassicActivity : AppCompatActivity() {
 
@@ -24,6 +25,15 @@ open class ClassicActivity : AppCompatActivity() {
     private var rng = 0
     private var name = "missing-no"
     private var score: Long = 0
+    // Difficulty 0 = easy, 1 = normal, 2 = master
+    private var difficulty: Int = 0
+    // Lives & jokers
+    private var hearts: Int = when (difficulty) {
+        0 -> 5 // Easy
+        1 -> 3 // Normal
+        2 -> 1 // Master
+        else -> throw IllegalArgumentException("Invalid difficulty level")
+    }
 
     // Add member variables for the buttons
     private lateinit var confirmButton: Button
@@ -43,6 +53,18 @@ open class ClassicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_challenge)
 
+        // select difficulty from diff selector activity
+        val intent = intent
+        if (intent.hasExtra("DIFFICULTY")) {
+            difficulty = intent.getIntExtra("DIFFICULTY", 0) // 0 is the default difficulty if nothing is passed
+            hearts = when (difficulty) {
+                0 -> 5 // Easy
+                1 -> 3 // Normal
+                2 -> 1 // Master
+                else -> throw IllegalArgumentException("Invalid difficulty level")
+            }
+        }
+
         jwtToken = getJwtToken()
         userId = getUserId()
         bestScore = getBestScore()
@@ -60,7 +82,7 @@ open class ClassicActivity : AppCompatActivity() {
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
 
-        rng = GLOBAL.generateRandomNumber()
+        rng = GLOBAL.generateUniqueRandomNumber()
 
         val inputPokemon = findViewById<EditText>(R.id.pokemonEditText)
         inputPokemon.setOnEditorActionListener { _, actionId, _ ->
@@ -255,7 +277,8 @@ open class ClassicActivity : AppCompatActivity() {
                         imageBackground.setBackgroundResource(R.color.silver)
                     }
                     // Create a JSON object with name and id if current score is better
-                    if (score > bestScore) {
+                    // only if difficulty is on master
+                    if (score > bestScore && difficulty == 2) {
                         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
                         editor.remove("bestScore")
@@ -275,7 +298,7 @@ open class ClassicActivity : AppCompatActivity() {
     // update the leaderboard entry
     private fun updateLeaderboard(json: JSONObject) {
         val client = OkHttpClient()
-        val url = "$apiUrl/leaderboard"
+        val url = "$apiUrl/leaderboard/classic"
         val body =
             json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = Request.Builder()

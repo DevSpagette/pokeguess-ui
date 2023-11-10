@@ -19,6 +19,13 @@
             android:name=".ChallengeActivity"
             android:exported="false" />
         <activity
+            android:name=".ClassicActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiffSelectorActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".AuthActivity"
             android:exported="false" />
         <activity
