@@ -1,5 +1,5 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/red_flash"
     android:oneshot="true">
-    <item android:drawable="@color/red" android:duration="250" />
+    <item android:drawable="@color/red" android:duration="150" />
 </animation-list>

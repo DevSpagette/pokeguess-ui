@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/titleTextView"
@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
+            android:textFontWeight="1000"
             android:text="PokeGuess" />
 
         <ImageButton
@@ -74,43 +75,44 @@
             android:layout_below="@id/menuPageImage"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
+            android:padding="16dp"
             android:orientation="vertical">
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/classic_mode_button"
-                style="@style/SubtitleTextStyle"
+                style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/sky_volc"
                 android:text="@string/menu_page_classic_button"
-                android:textColor="@color/white_volc" />
+                android:textColor="@color/white_volc"/>
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/challenge_mode_button"
-                style="@style/SubtitleTextStyle"
+                style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/orange_volc"
                 android:text="@string/menu_page_challenge_button"
                 android:textColor="@color/white_volc" />
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/leaderboard_button"
-                style="@style/SubtitleTextStyle"
+                style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/blue_volc"
                 android:text="@string/menu_page_leaderboard_button"
                 android:textColor="@color/white_volc" />
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/quit_button"
-                style="@style/SubtitleTextStyle"
+                style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/white_volc"
                 android:text="@string/menu_page_quit_button"
                 android:textColor="@color/orange_volc" />

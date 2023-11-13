@@ -9,11 +9,10 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
-
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var saveButton: Button
-    private var changesMade: Boolean = false
+    private lateinit var muteSounds: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +20,21 @@ class SettingsActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
 
-        // Array of checkbox IDs
+        saveButton = findViewById(R.id.saveButton)
+        saveButton.isEnabled = false
+        setSaveButtonDisabledState()
+
+        muteSounds = findViewById(R.id.settings_mute_sounds)
+        val isSoundMuted = sharedPreferences.getBoolean("muteSounds", false)
+        muteSounds.isChecked = isSoundMuted
+
+        muteSounds.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean("muteSounds", isChecked).apply()
+
+            // Update the global variable
+            GLOBAL.MUTESOUNDS = isChecked
+        }
+
         val checkBoxIds = intArrayOf(
             R.id.generation1_checkbox,
             R.id.generation2_checkbox,
@@ -34,19 +47,12 @@ class SettingsActivity : AppCompatActivity() {
             R.id.generation9_checkbox,
         )
 
-        saveButton = findViewById(R.id.saveButton)
-        saveButton.isEnabled = false
-        runOnUiThread {
-            saveButton.setBackgroundColor(ContextCompat.getColor(this, R.color.gray_volc))
-        }
-
         val checkBoxes = mutableListOf<CheckBox>()
 
         for (checkBoxId in checkBoxIds) {
             val checkBox = findViewById<CheckBox>(checkBoxId)
             val generation = checkBox.text.toString()
 
-            // Get the stored value or use the default
             val isChecked = sharedPreferences.getBoolean(generation, true)
             checkBox.isChecked = isChecked
             checkBoxes.add(checkBox)
@@ -58,38 +64,47 @@ class SettingsActivity : AppCompatActivity() {
                 if (isChecked) {
                     sharedPreferences.edit().putBoolean(generation, true).apply()
                 } else {
-                    // Ensure at least one generation is selected
                     if (checkedCheckboxes.isEmpty()) {
-                        // Prevent unchecking if only one is checked
                         checkBox.isChecked = true
                     } else {
                         sharedPreferences.edit().putBoolean(generation, false).apply()
                     }
                 }
 
-                // Enable the save button when a change occurs
-                runOnUiThread {
-                    saveButton.setBackgroundColor(ContextCompat.getColor(this, R.color.blue_volc))
-                }
-                changesMade = true
-                saveButton.isEnabled = true
+                setSaveButtonEnabledState()
             }
         }
 
-        // Back to the main activity button
         val backButton = findViewById<ImageButton>(R.id.back_to_main_button)
         backButton.setOnClickListener {
             onBackPressed()
         }
 
         saveButton.setOnClickListener {
-            val ctx = applicationContext
-            val pm = ctx.packageManager
-            val intent = pm.getLaunchIntentForPackage(ctx.packageName)
-            val mainIntent = Intent.makeRestartActivityTask(intent!!.component)
-            ctx.startActivity(mainIntent)
-            Runtime.getRuntime().exit(0)
+            restartApplication()
         }
+    }
 
+    private fun setSaveButtonEnabledState() {
+        runOnUiThread {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.blue_volc)
+        }
+        saveButton.isEnabled = true
+    }
+
+    private fun setSaveButtonDisabledState() {
+        runOnUiThread {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.gray_volc)
+        }
+        saveButton.isEnabled = false
+    }
+
+    private fun restartApplication() {
+        val ctx = applicationContext
+        val pm = ctx.packageManager
+        val intent = pm.getLaunchIntentForPackage(ctx.packageName)
+        val mainIntent = Intent.makeRestartActivityTask(intent!!.component)
+        ctx.startActivity(mainIntent)
+        Runtime.getRuntime().exit(0)
     }
 }

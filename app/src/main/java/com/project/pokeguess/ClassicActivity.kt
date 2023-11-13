@@ -2,6 +2,7 @@ package com.project.pokeguess
 
 import android.content.Context
 import android.graphics.drawable.AnimationDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -25,8 +26,10 @@ open class ClassicActivity : AppCompatActivity() {
     private var rng = 0
     private var name = "missing-no"
     private var score: Long = 0
+
     // Difficulty 0 = easy, 1 = normal, 2 = master
     private var difficulty: Int = 0
+
     // Lives & jokers
     private var hearts: Int = when (difficulty) {
         0 -> 5 // Easy
@@ -49,6 +52,11 @@ open class ClassicActivity : AppCompatActivity() {
     private var userId: String? = null
     private var bestScore: Long = 0
 
+    // Initialize MediaPlayer objects
+    private var mediaPlayerGood: MediaPlayer? = null
+    private var mediaPlayerWrong: MediaPlayer? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_challenge)
@@ -56,7 +64,10 @@ open class ClassicActivity : AppCompatActivity() {
         // select difficulty from diff selector activity
         val intent = intent
         if (intent.hasExtra("DIFFICULTY")) {
-            difficulty = intent.getIntExtra("DIFFICULTY", 0) // 0 is the default difficulty if nothing is passed
+            difficulty = intent.getIntExtra(
+                "DIFFICULTY",
+                0
+            ) // 0 is the default difficulty if nothing is passed
             hearts = when (difficulty) {
                 0 -> 5 // Easy
                 1 -> 3 // Normal
@@ -81,6 +92,10 @@ open class ClassicActivity : AppCompatActivity() {
         confirmButton = findViewById<Button>(R.id.confirmButton)
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
+
+        // Load sound effects
+        mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
+        mediaPlayerWrong = MediaPlayer.create(this, R.raw.wrong_guess)
 
         rng = GLOBAL.generateUniqueRandomNumber()
 
@@ -251,6 +266,7 @@ open class ClassicActivity : AppCompatActivity() {
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
                             greenFlashAnimation.start()
+                            playGoodSound()
                         }
                         loadPokemonSprite()
                     } else {
@@ -263,6 +279,7 @@ open class ClassicActivity : AppCompatActivity() {
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
+                            playWrongSound()
                         }
                     }
                 } catch (e: Exception) {
@@ -279,7 +296,8 @@ open class ClassicActivity : AppCompatActivity() {
                     // Create a JSON object with name and id if current score is better
                     // only if difficulty is on master
                     if (score > bestScore && difficulty == 2) {
-                        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val sharedPreferences =
+                            getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
                         editor.remove("bestScore")
                         editor.putLong("bestScore", bestScore)
@@ -310,13 +328,21 @@ open class ClassicActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
-                Snackbar.make(findViewById(android.R.id.content), "Could not update leaderboard, try again later.", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Could not update leaderboard, try again later.",
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    Snackbar.make(findViewById(android.R.id.content), "Leaderboard updated.", Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Leaderboard updated.",
+                        Snackbar.LENGTH_LONG
+                    )
                         .show()
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -325,6 +351,22 @@ open class ClassicActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun playGoodSound() {
+        if (!GLOBAL.MUTESOUNDS)
+            mediaPlayerGood?.start()
+    }
+
+    private fun playWrongSound() {
+        if (!GLOBAL.MUTESOUNDS)
+            mediaPlayerWrong?.start()
+    }
+
+    override fun onDestroy() {
+        mediaPlayerGood?.release()
+        mediaPlayerWrong?.release()
+        super.onDestroy()
     }
 
     private fun getJwtToken(): String? {

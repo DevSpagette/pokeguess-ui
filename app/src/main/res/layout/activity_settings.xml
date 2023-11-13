@@ -23,16 +23,27 @@
         android:layout_marginTop="16dp"
         android:text="@string/settings_title" />
 
+    <CheckBox
+        android:id="@+id/settings_mute_sounds"
+        style="@style/DefaultTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:checked="false"
+        android:text="Mute sounds" />
+
     <TextView
         android:id="@+id/settings_generationPicker_textView"
         style="@style/SubtitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/settings_title"
+        android:layout_below="@id/settings_mute_sounds"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:textAlignment="center"
         android:text="Pick your generations \n(Challenge mode)"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -46,6 +57,7 @@
 
         <!-- Row 1 -->
         <TableRow>
+
             <CheckBox
                 android:id="@+id/generation1_checkbox"
                 style="@style/DefaultTextStyle"
@@ -53,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen1" />
+
             <CheckBox
                 android:id="@+id/generation2_checkbox"
                 style="@style/DefaultTextStyle"
@@ -63,6 +76,7 @@
 
         <!-- Row 2 -->
         <TableRow>
+
             <CheckBox
                 android:id="@+id/generation3_checkbox"
                 style="@style/DefaultTextStyle"
@@ -70,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen3" />
+
             <CheckBox
                 android:id="@+id/generation4_checkbox"
                 style="@style/DefaultTextStyle"
@@ -80,6 +95,7 @@
 
         <!-- Row 3 -->
         <TableRow>
+
             <CheckBox
                 android:id="@+id/generation5_checkbox"
                 style="@style/DefaultTextStyle"
@@ -87,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen5" />
+
             <CheckBox
                 android:id="@+id/generation6_checkbox"
                 style="@style/DefaultTextStyle"
@@ -97,6 +114,7 @@
 
         <!-- Row 4 -->
         <TableRow>
+
             <CheckBox
                 android:id="@+id/generation7_checkbox"
                 style="@style/DefaultTextStyle"
@@ -104,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="gen7" />
+
             <CheckBox
                 android:id="@+id/generation8_checkbox"
                 style="@style/DefaultTextStyle"
@@ -114,6 +133,7 @@
 
         <!-- Row 5 -->
         <TableRow>
+
             <CheckBox
                 android:id="@+id/generation9_checkbox"
                 style="@style/DefaultTextStyle"
@@ -132,22 +152,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/settings_generationPicker_genArray"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="128dp"
+        android:layout_marginTop="16dp"
         android:text="@string/settings_warning"
         android:textAlignment="center"
         android:textColor="@android:color/darker_gray" />
 
-    <Button
+    <com.project.pokeguess.CustomButton
         android:id="@+id/saveButton"
-        style="@style/SubtitleTextStyle"
+        style="@style/CustomButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_restart_textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/blue_volc"
-        android:textColor="@color/white_volc"
-        android:text="@string/settings_save_button" />
+        android:backgroundTint="@color/gray_volc"
+        android:text="@string/settings_save_button"
+        android:textColor="@color/white_volc"/>
 
 </RelativeLayout>

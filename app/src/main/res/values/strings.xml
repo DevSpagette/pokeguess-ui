@@ -52,7 +52,7 @@
     <!-- Settings page -->
     <!--===============-->
     <string name="settings_title">PokeGuess settings</string>
-    <string name="settings_warning">App needs to restart for the settings to apply!</string>
+    <string name="settings_warning">App needs to restart for the generation settings to apply!</string>
     <string name="settings_save_button">Save</string>
 
     <!--====================-->

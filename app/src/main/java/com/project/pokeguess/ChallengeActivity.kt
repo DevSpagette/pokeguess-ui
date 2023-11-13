@@ -2,6 +2,7 @@ package com.project.pokeguess
 
 import android.content.Context
 import android.graphics.drawable.AnimationDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -39,6 +40,10 @@ open class ChallengeActivity : AppCompatActivity() {
     private var userId: String? = null
     private var bestScore: Long = 0
 
+    // Initialize MediaPlayer objects
+    private var mediaPlayerGood: MediaPlayer? = null
+    private var mediaPlayerWrong: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_challenge)
@@ -59,6 +64,10 @@ open class ChallengeActivity : AppCompatActivity() {
         confirmButton = findViewById<Button>(R.id.confirmButton)
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
+
+        // Load sound effects
+        mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
+        mediaPlayerWrong = MediaPlayer.create(this, R.raw.wrong_guess)
 
         rng = GLOBAL.generateRandomNumber()
 
@@ -229,6 +238,7 @@ open class ChallengeActivity : AppCompatActivity() {
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
                             greenFlashAnimation.start()
+                            playGoodSound()
                         }
                         loadPokemonSprite()
                     } else {
@@ -241,6 +251,7 @@ open class ChallengeActivity : AppCompatActivity() {
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
+                            playWrongSound()
                         }
                     }
                 } catch (e: Exception) {
@@ -256,7 +267,8 @@ open class ChallengeActivity : AppCompatActivity() {
                     }
                     // Create a JSON object with name and id if current score is better
                     if (score > bestScore) {
-                        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val sharedPreferences =
+                            getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
                         editor.remove("bestScore")
                         editor.putLong("bestScore", bestScore)
@@ -287,13 +299,21 @@ open class ChallengeActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
-                Snackbar.make(findViewById(android.R.id.content), "Could not update leaderboard, try again later.", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Could not update leaderboard, try again later.",
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    Snackbar.make(findViewById(android.R.id.content), "Leaderboard updated.", Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Leaderboard updated.",
+                        Snackbar.LENGTH_LONG
+                    )
                         .show()
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -302,6 +322,22 @@ open class ChallengeActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun playGoodSound() {
+        if (!GLOBAL.MUTESOUNDS)
+            mediaPlayerGood?.start()
+    }
+
+    private fun playWrongSound() {
+        if (!GLOBAL.MUTESOUNDS)
+            mediaPlayerWrong?.start()
+    }
+
+    override fun onDestroy() {
+        mediaPlayerGood?.release()
+        mediaPlayerWrong?.release()
+        super.onDestroy()
     }
 
     private fun getJwtToken(): String? {

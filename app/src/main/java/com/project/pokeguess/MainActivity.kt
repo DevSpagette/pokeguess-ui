@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -28,6 +29,7 @@ import kotlin.random.Random
 import org.json.JSONObject
 
 object GLOBAL {
+    var MUTESOUNDS = false
     var GEN1Checked = true
     var GEN2Checked = true
     var GEN3Checked = true
@@ -132,6 +134,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Initialize MediaPlayer objects
+    private var mediaPlayerUi: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -144,6 +149,7 @@ class MainActivity : AppCompatActivity() {
 
         homePokemonImageView = findViewById(R.id.mainPageImage)
         homePokemonNameView = findViewById(R.id.mainPageImageName)
+        mediaPlayerUi = MediaPlayer.create(this, R.raw.ui_click)
 
         swapImagesPeriodically()
 
@@ -153,23 +159,22 @@ class MainActivity : AppCompatActivity() {
         // load settings
         loadSettings()
 
-        // Set a click listener for the "Go to Leaderboard" button
         val userButton = findViewById<ImageButton>(R.id.user_button)
         val classicButton = findViewById<Button>(R.id.classic_mode_button)
         val challengeButton = findViewById<Button>(R.id.challenge_mode_button)
         val leaderboardButton = findViewById<Button>(R.id.leaderboard_button)
         val settingsButton = findViewById<ImageButton>(R.id.settings_button)
         val quitButton = findViewById<Button>(R.id.quit_button)
-
         val refreshButton = findViewById<ImageButton>(R.id.refreshButton)
-
         val serverStatusText = findViewById<TextView>(R.id.serverStatusText)
         val serverStatusView = findViewById<View>(R.id.statusDot)
+
         serverStatusText.text = "API status: $status"
         serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
 
         userButton.setOnClickListener {
             // Create an Intent to navigate to ChallengeActivity
+            playUiSound()
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
         }
@@ -220,6 +225,7 @@ class MainActivity : AppCompatActivity() {
 
         settingsButton.setOnClickListener {
             // Create an Intent to navigate to LeaderboardActivity
+            playUiSound()
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
@@ -229,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         quitButton.setOnClickListener {
-            val intent = Intent(MainActivity.ACTION_CLOSE_APP)
+            val intent = Intent(ACTION_CLOSE_APP)
             sendBroadcast(intent)
             finish()
         }
@@ -282,10 +288,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun getJwtToken(): String? {
-        // Retrieve the jwtToken from SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("jwtToken", null)
+    private fun playUiSound() {
+        if (!GLOBAL.MUTESOUNDS)
+            mediaPlayerUi?.start()
     }
 
     private fun generatePokemonSprite() {
@@ -365,13 +370,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        mediaPlayerUi?.release()
         super.onDestroy()
-        // Unregister the broadcast receiver when the activity is destroyed
         unregisterReceiver(closeAppReceiver)
+    }
+
+    private fun getJwtToken(): String? {
+        // Retrieve the jwtToken from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("jwtToken", null)
     }
 
     private fun loadSettings() {
         val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+
+        GLOBAL.MUTESOUNDS = !(sharedPreferences.contains("muteSounds") && !sharedPreferences.getBoolean("muteSounds", true))
 
         // Initialize preferences if they don't exist
         if (!sharedPreferences.contains("gen1")) {
