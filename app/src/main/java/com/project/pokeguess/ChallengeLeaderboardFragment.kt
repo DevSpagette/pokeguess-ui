@@ -1,14 +1,13 @@
 package com.project.pokeguess
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -25,10 +24,24 @@ import java.lang.Integer.min
 import androidx.fragment.app.Fragment
 
 class ChallengeLeaderboardFragment : Fragment() {
+    companion object {
+        var username: String? = null
+        fun newInstance(username: String?): ChallengeLeaderboardFragment {
+            val fragment = ChallengeLeaderboardFragment()
+            val args = Bundle()
+            args.putString("username", username)
+            fragment.arguments = args
+
+            Companion.username = username
+
+            return fragment
+        }
+    }
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
     private val maxEntries = 100
     private lateinit var progressBar: ProgressBar
+    private lateinit var scrollView: ScrollView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,13 +49,13 @@ class ChallengeLeaderboardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_challenge, container, false)
 
-        // Here, you can initialize your views, set up the leaderboard, and handle UI logic.
         val leaderboardTable = view.findViewById<TableLayout>(R.id.leaderboard_challenge_table)
         progressBar = view.findViewById(R.id.progressBar)
+        scrollView = view.findViewById(R.id.leaderboard_challenge_view)
 
-        // Update UI on the main thread
         requireActivity().runOnUiThread {
             progressBar.visibility = View.VISIBLE
+            scrollView.visibility = View.GONE
         }
 
         // Create an array of column titles
@@ -67,8 +80,6 @@ class ChallengeLeaderboardFragment : Fragment() {
 
             columnTitleRow.addView(title)
         }
-
-        // Add the columnTitleRow to the TableLayout
         leaderboardTable.addView(columnTitleRow)
 
         // Use a callback to fetch leaderboard entries
@@ -83,28 +94,31 @@ class ChallengeLeaderboardFragment : Fragment() {
                     for (text in cellTexts) {
                         val cell = TextView(requireContext(), null, 0, R.style.DefaultTextStyle)
                         cell.text = text
+                        cell.textSize = 15F
                         cell.setTextColor(Color.BLACK)
-                        cell.background = ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.table_row_background
-                        )
+                        cell.setTypeface(null, Typeface.NORMAL)
+                        cell.setPadding(16, 16, 16, 16)
+
+                        if (entry.name == username) {
+                            cell.background = ContextCompat.getDrawable(requireContext(), R.drawable.table_row_special_background)
+                        } else {
+                            cell.background = ContextCompat.getDrawable(requireContext(), R.drawable.table_row_background)
+                        }
+
                         cell.layoutParams = TableRow.LayoutParams(
                             TableRow.LayoutParams.WRAP_CONTENT,
                             TableRow.LayoutParams.WRAP_CONTENT
                         )
                         val params = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
                         cell.layoutParams = params
-                        cell.setPadding(16, 16, 16, 16)
-                        cell.textSize = 15F
-                        cell.setTypeface(null, Typeface.NORMAL)
+
                         row.addView(cell)
                     }
-
-                    // Add the TableRow to the TableLayout
                     leaderboardTable.addView(row)
                 }
 
                 progressBar.visibility = View.GONE
+                scrollView.visibility = View.VISIBLE
             }
         }
 
@@ -125,7 +139,7 @@ class ChallengeLeaderboardFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {
                 // Handle network request failure here
                 e.printStackTrace()
-                callback(emptyList()) // Return an empty list in case of failure
+                callback(emptyList())
             }
 
             override fun onResponse(call: Call, response: Response) {

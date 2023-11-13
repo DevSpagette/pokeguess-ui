@@ -10,9 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:indeterminate="true"
-        android:indeterminateTint="@color/blue_volc"
-        android:layout_marginTop="16dp"
-        android:visibility="gone" />
+        android:indeterminateTint="@color/orange_volc"
+        android:layout_marginTop="64dp" />
 
     <TextView
         android:id="@+id/leaderboard_classic_description"
@@ -24,13 +23,15 @@
         android:text="@string/leaderboard_classic_description" />
 
     <ScrollView
+        android:id="@+id/leaderboard_classic_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/leaderboard_classic_description"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
 
         <TableLayout
             android:id="@+id/leaderboard_classic_table"

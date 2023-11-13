@@ -1,6 +1,6 @@
 package com.project.pokeguess
 
-import android.content.Intent
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
@@ -18,10 +18,11 @@ class LeaderboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leaderboard)
 
+        val username = getUsername()
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tabLayout)
 
-        viewPager.adapter = LeaderboardPagerAdapter(this)
+        viewPager.adapter = LeaderboardPagerAdapter(this, username)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
@@ -38,16 +39,22 @@ class LeaderboardActivity : AppCompatActivity() {
         }
     }
 
-    private inner class LeaderboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+    private inner class LeaderboardPagerAdapter(activity: AppCompatActivity, private val username: String?) : FragmentStateAdapter(activity) {
         override fun getItemCount(): Int {
             return 2
         }
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> ClassicLeaderboardFragment()
-                1 -> ChallengeLeaderboardFragment()
-                else -> ChallengeLeaderboardFragment()
+                0 -> ClassicLeaderboardFragment.newInstance(username)
+                1 -> ChallengeLeaderboardFragment.newInstance(username)
+                else -> ChallengeLeaderboardFragment.newInstance(username)
             }
         }
+    }
+
+    private fun getUsername(): String? {
+        // Retrieve the username from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", null)
     }
 }
