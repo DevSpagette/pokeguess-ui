@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
             val versionName: String = pInfo.versionName
-            versionTextView.text = "Version: $versionName"
+            versionTextView.text = "UI version: $versionName"
         } catch (e: Exception) {
             e.printStackTrace()
         }
