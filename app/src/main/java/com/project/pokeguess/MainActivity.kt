@@ -2,31 +2,33 @@ package com.project.pokeguess
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.PackageInfoCompat
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import com.google.android.material.snackbar.Snackbar
+import org.json.JSONObject
 import java.io.IOException
 import java.net.SocketTimeoutException
-import kotlin.random.Random
-import org.json.JSONObject
+
 
 object GLOBAL {
     var MUTESOUNDS = false
@@ -169,11 +171,20 @@ class MainActivity : AppCompatActivity() {
         val serverStatusText = findViewById<TextView>(R.id.serverStatusText)
         val serverStatusView = findViewById<View>(R.id.statusDot)
 
+        val versionTextView = findViewById<TextView>(R.id.version)
+        try {
+            val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
+            val versionName: String = pInfo.versionName
+            versionTextView.text = "Version: $versionName"
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         serverStatusText.text = "API status: $status"
         serverStatusView.setBackgroundResource(R.drawable.yellow_dot)
 
         userButton.setOnClickListener {
-            // Create an Intent to navigate to ChallengeActivity
+            // Create an Intent to navigate to profile page
             playUiSound()
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
@@ -200,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 
         classicButton.setOnClickListener {
             if (jwtToken != null) {
-                // Create an Intent to navigate to diff selector then to ChallengeActivity
+                // Create an Intent to navigate to diff selector then to ClassicActivity
                 val intent = Intent(this, DiffSelectorActivity::class.java)
                 startActivity(intent)
             } else {
@@ -224,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         settingsButton.setOnClickListener {
-            // Create an Intent to navigate to LeaderboardActivity
+            // Create an Intent to navigate to Settings
             playUiSound()
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
