@@ -11,8 +11,8 @@ android {
         applicationId = "com.project.pokeguess"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.3.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,8 +41,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-    implementation ("com.squareup.okhttp3:okhttp:4.9.2")
-    implementation ("org.json:json:20210307")
+    implementation("com.squareup.okhttp3:okhttp:4.9.2")
+    implementation("org.json:json:20210307")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

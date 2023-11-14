@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -17,7 +16,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.pm.PackageInfoCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.Call
@@ -28,7 +26,6 @@ import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 import java.net.SocketTimeoutException
-
 
 object GLOBAL {
     var MUTESOUNDS = false
@@ -395,7 +392,11 @@ class MainActivity : AppCompatActivity() {
     private fun loadSettings() {
         val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
 
-        GLOBAL.MUTESOUNDS = !(sharedPreferences.contains("muteSounds") && !sharedPreferences.getBoolean("muteSounds", true))
+        GLOBAL.MUTESOUNDS =
+            !(sharedPreferences.contains("muteSounds") && !sharedPreferences.getBoolean(
+                "muteSounds",
+                true
+            ))
 
         // Initialize preferences if they don't exist
         if (!sharedPreferences.contains("gen1")) {
