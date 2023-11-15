@@ -9,12 +9,15 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -113,8 +116,11 @@ class MainActivity : AppCompatActivity() {
     private val homeImage = mutableListOf<String>()
     private val homeImageName = mutableListOf<String>()
 
+    private var mediaPlayerUi: MediaPlayer? = null
     private lateinit var homePokemonImageView: ImageView
     private lateinit var homePokemonNameView: TextView
+
+    private val popupManager by lazy { PopupManager(this) }
 
     private var rng = 0
     private var currentIndex = 0
@@ -133,12 +139,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Initialize MediaPlayer objects
-    private var mediaPlayerUi: MediaPlayer? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        checkForUpdates()
 
         // Register the broadcast receiver
         val intentFilter = IntentFilter(ACTION_CLOSE_APP)
@@ -240,6 +245,7 @@ class MainActivity : AppCompatActivity() {
 
         refreshButton.setOnClickListener {
             checkServerStatus()
+            checkForUpdates()
         }
 
         quitButton.setOnClickListener {
@@ -375,6 +381,65 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(this, imageSwapDelay)
             }
         })
+    }
+
+    private fun checkForUpdates() {
+        val client = OkHttpClient()
+        val updateChannelUrl = "https://pokeguess-api.onrender.com/checkForUpdates"
+
+        val request = Request.Builder()
+            .url(updateChannelUrl)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    showToast("Failed to check for updates. Please try again later.")
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+
+                try {
+                    runOnUiThread {
+                        if (response.code == 200) {
+                            val responseBody = response.body?.string()
+                            val jsonObject = JSONObject(responseBody)
+
+                            // Extract relevant information from the JSON response
+                            val newestVersion = jsonObject.getString("newestVersion")
+                            val downloadLink = jsonObject.getString("downloadLink")
+
+                            val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
+                            val currentVersion: String = pInfo.versionName
+
+                            if (currentVersion == newestVersion) {
+                                runOnUiThread {
+                                    showToast("App is up to date!")
+                                }
+                            } else {
+                                popupManager.showPopup(currentVersion, newestVersion, downloadLink)
+                            }
+                        } else {
+                            runOnUiThread {
+                                showToast("Failed to check for updates. Please try again later.")
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("Error parsing server response.")
+                    e.printStackTrace()
+                    runOnUiThread {
+                        showToast("Error parsing server response.")
+                    }
+                }
+            }
+
+        })
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/silver"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/popupTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TitleTextStyle"
+        android:text="Update Available"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/popupMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/DefaultTextStyle"
+        android:text="A new version is available. Do you want to update?"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/currentVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Credits"
+        android:text="old version / new version"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="32dp"/>
+
+    <com.project.pokeguess.CustomButton
+        android:id="@+id/btnUpdate"
+        style="@style/CustomButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:background="@color/orange_volc"
+        android:textColor="@color/white_volc"/>
+
+    <com.project.pokeguess.CustomButton
+        android:id="@+id/btnCancel"
+        style="@style/CustomButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Not now"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:background="@color/white_volc"
+        android:textColor="@color/blue_volc"/>
+</LinearLayout>
