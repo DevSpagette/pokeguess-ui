@@ -15,6 +15,7 @@ android {
         versionName = "1.3.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        setProperty("archivesBaseName", "PokeGuess_$versionName")
     }
 
     buildTypes {
