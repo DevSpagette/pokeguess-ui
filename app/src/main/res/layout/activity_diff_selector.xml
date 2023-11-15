@@ -16,13 +16,13 @@
 
     <TextView
         android:id="@+id/diff_selector_title"
-        style="@style/TitleTextStyle"
+        style="@style/SubtitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/back_to_main_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="64dp"
         android:text="@string/diff_selector_title" />
 
     <!-- Linear Layout for Buttons -->

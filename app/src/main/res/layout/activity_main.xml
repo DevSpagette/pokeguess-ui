@@ -75,7 +75,7 @@
             android:layout_below="@id/menuPageImage"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            android:padding="16dp"
+            android:padding="8dp"
             android:orientation="vertical">
 
             <com.project.pokeguess.CustomButton
@@ -92,7 +92,7 @@
                 style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/orange_volc"
                 android:text="@string/menu_page_challenge_button"
                 android:textColor="@color/white_volc" />
@@ -102,7 +102,7 @@
                 style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/blue_volc"
                 android:text="@string/menu_page_leaderboard_button"
                 android:textColor="@color/white_volc" />
@@ -112,7 +112,7 @@
                 style="@style/CustomButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/white_volc"
                 android:text="@string/menu_page_quit_button"
                 android:textColor="@color/orange_volc" />
@@ -120,20 +120,17 @@
 
         <RelativeLayout
             android:id="@+id/menuPageStatus"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/menuPageButtons"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp">
 
             <ImageButton
                 android:id="@+id/refreshButton"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_centerHorizontal="true"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_refresh" />
@@ -144,7 +141,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/refreshButton"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="-16dp"
                 android:layout_marginBottom="16dp">
 
                 <View
@@ -172,15 +168,18 @@
                 android:textColor="@color/gray_volc"
                 android:text="version number" />
 
-            <TextView
-                android:id="@+id/credits"
-                style="@style/Credits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:text="@string/menu_page_credits" />
-
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/credits"
+            style="@style/Credits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/menu_page_credits" />
 
     </RelativeLayout>
 
