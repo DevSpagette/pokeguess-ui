@@ -413,12 +413,12 @@ class MainActivity : AppCompatActivity() {
                             val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
                             val currentVersion: String = pInfo.versionName
 
-                            if (currentVersion == newestVersion) {
+                            if (currentVersion < newestVersion) {
+                                popupManager.showPopup(currentVersion, newestVersion, downloadLink)
+                            } else {
                                 runOnUiThread {
                                     showToast("App is up to date!")
                                 }
-                            } else {
-                                popupManager.showPopup(currentVersion, newestVersion, downloadLink)
                             }
                         } else {
                             runOnUiThread {

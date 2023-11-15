@@ -4,11 +4,14 @@ import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -26,6 +29,7 @@ open class ClassicActivity : AppCompatActivity() {
     private var rng = 0
     private var name = "missing-no"
     private var score: Long = 0
+    private var doubleBackToExitPressedOnce = false
 
     // Difficulty 0 = easy, 1 = normal, 2 = master
     private var difficulty: Int = 0
@@ -385,6 +389,20 @@ open class ClassicActivity : AppCompatActivity() {
         // Retrieve the jwtToken from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getLong("bestScore", 0)
+    }
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
 }

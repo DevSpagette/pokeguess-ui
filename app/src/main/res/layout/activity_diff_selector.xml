@@ -28,12 +28,11 @@
     <!-- Linear Layout for Buttons -->
     <LinearLayout
         android:id="@+id/linear_layout_buttons"
-        android:layout_width="512dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/diff_selector_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="256dp"
         android:orientation="vertical">
 
         <!-- Easy Button -->
@@ -43,11 +42,11 @@
             android:orientation="vertical"
             android:layout_marginBottom="32dp">
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/easyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/DefaultTextStyle"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/sky_volc"
                 android:text="Easy"
                 android:textColor="@color/white_volc" />
@@ -66,11 +65,11 @@
             android:orientation="vertical"
             android:layout_marginBottom="32dp">
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/normalButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/DefaultTextStyle"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/blue_volc"
                 android:text="Normal"
                 android:textColor="@color/silver"/>
@@ -88,11 +87,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
+            <com.project.pokeguess.CustomButton
                 android:id="@+id/masterButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/DefaultTextStyle"
+                style="@style/CustomButtonStyle"
                 android:backgroundTint="@color/orange_volc"
                 android:textColor="@color/silver"
                 android:text="Master" />

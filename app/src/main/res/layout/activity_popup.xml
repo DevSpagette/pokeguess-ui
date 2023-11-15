@@ -1,61 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="@color/silver"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/popupTitle"
+        style="@style/TitleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleTextStyle"
+        android:gravity="center"
         android:text="Update Available"
-        android:textStyle="bold"
         android:textSize="18sp"
-        android:gravity="center"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/popupMessage"
+        style="@style/DefaultTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/DefaultTextStyle"
-        android:text="A new version is available. Do you want to update?"
-        android:textSize="16sp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
-        android:layout_marginTop="32dp"/>
+        android:text="A new version is available. Do you want to update?"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/currentVersion"
+        style="@style/Credits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Credits"
-        android:text="old version / new version"
-        android:textSize="16sp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
-        android:layout_marginTop="32dp"/>
+        android:text="old version / new version"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/notice"
+        style="@style/Credits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Newer app versions are hosted on google drive, please grant it the necessary permissions
+to be able to install updates."
+        android:textColor="@color/gray_volc"
+        android:textSize="12sp" />
 
     <com.project.pokeguess.CustomButton
         android:id="@+id/btnUpdate"
         style="@style/CustomButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update"
-        android:textSize="16sp"
         android:layout_marginTop="16dp"
         android:background="@color/orange_volc"
-        android:textColor="@color/white_volc"/>
+        android:text="Update"
+        android:textColor="@color/white_volc"
+        android:textSize="16sp" />
 
     <com.project.pokeguess.CustomButton
         android:id="@+id/btnCancel"
         style="@style/CustomButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Not now"
-        android:textSize="14sp"
         android:layout_marginTop="8dp"
         android:background="@color/white_volc"
-        android:textColor="@color/blue_volc"/>
+        android:text="Not now"
+        android:textColor="@color/blue_volc"
+        android:textSize="14sp" />
 </LinearLayout>
