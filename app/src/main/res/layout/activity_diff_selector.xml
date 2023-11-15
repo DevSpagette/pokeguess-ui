@@ -28,7 +28,7 @@
     <!-- Linear Layout for Buttons -->
     <LinearLayout
         android:id="@+id/linear_layout_buttons"
-        android:layout_width="match_parent"
+        android:layout_width="512dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/diff_selector_title"
         android:layout_centerHorizontal="true"

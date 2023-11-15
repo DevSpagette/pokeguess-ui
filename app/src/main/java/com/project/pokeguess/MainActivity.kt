@@ -143,8 +143,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkForUpdates()
-
         // Register the broadcast receiver
         val intentFilter = IntentFilter(ACTION_CLOSE_APP)
         registerReceiver(closeAppReceiver, intentFilter)
@@ -163,6 +161,8 @@ class MainActivity : AppCompatActivity() {
         // load settings
         loadSettings()
 
+        checkForUpdates()
+
         val userButton = findViewById<ImageButton>(R.id.user_button)
         val classicButton = findViewById<Button>(R.id.classic_mode_button)
         val challengeButton = findViewById<Button>(R.id.challenge_mode_button)
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
             val versionName: String = pInfo.versionName
-            versionTextView.text = "UI version: $versionName "
+            versionTextView.text = "UI version: $versionName"
         } catch (e: Exception) {
             e.printStackTrace()
         }

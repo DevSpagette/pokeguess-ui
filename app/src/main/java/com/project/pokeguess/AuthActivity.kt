@@ -256,16 +256,16 @@ class AuthActivity : AppCompatActivity() {
         return sharedPreferences.getString("jwtToken", null)
     }
 
-    private fun getBestScore(): Long {
-        // Retrieve the best score (challenge) from SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("bestScore", 0)
-    }
-
     private fun getBestMaster(): Long {
         // Retrieve the best score (classic) from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getLong("bestMaster", 0)
+    }
+
+    private fun getBestScore(): Long {
+        // Retrieve the best score (challenge) from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("bestScore", 0)
     }
 
     private fun getUsername(): String? {
