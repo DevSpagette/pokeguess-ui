@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutChallenge"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver">
+
+    <!-- Text for Challenge Mode -->
+    <TextView
+        android:id="@+id/classicModeText"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Classic Mode" />
+
+    <!-- Text for Score -->
+    <TextView
+        android:id="@+id/heartsText"
+        style="@style/SubtitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:text="Hearts: 3" />
+
+    <!-- Text for Score -->
+    <TextView
+        android:id="@+id/scoreText"
+        style="@style/SubtitleTextStyle"
+        android:layout_below="@+id/heartsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Score: 0" />
+
+    <!-- ImageView to display the Pokemon sprite -->
+    <ImageView
+        android:id="@+id/pokemonImageView"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_below="@+id/scoreText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="64dp"
+        android:background="@color/silver"
+        app:srcCompat="@drawable/placeholder_pokemon" />
+
+    <!-- EditText for user input (single-line) -->
+    <LinearLayout
+        android:id="@+id/pokemonEditLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pokemonImageView"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/pokemonEditText"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            style="@style/DefaultTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:hint="@string/game_pokemon_name_input"
+            android:paddingVertical="4dp"
+            android:paddingBottom="2dp"
+            android:textColorHint="@color/blue_volc"
+            android:textCursorDrawable="@drawable/custom_cursor" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/orange_volc" />
+    </LinearLayout>
+
+    <!-- Button for "I don't know" -->
+    <Button
+        android:id="@+id/idkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pokemonEditLayout"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:padding="15dp"
+        android:text="I don't know"
+        android:textColor="@color/orange_volc" />
+
+    <!-- Button to confirm and send API POST request -->
+    <com.project.pokeguess.CustomButton
+        android:id="@+id/confirmButton"
+        style="@style/CustomButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/idkButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue_volc"
+        android:textColor="@color/silver"
+        android:text="@string/game_confirm_pokemon_button" />
+
+
+</RelativeLayout>

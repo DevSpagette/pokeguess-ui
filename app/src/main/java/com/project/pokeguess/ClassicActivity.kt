@@ -1,6 +1,7 @@
 package com.project.pokeguess
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -46,6 +47,7 @@ open class ClassicActivity : AppCompatActivity() {
     private lateinit var confirmButton: Button
     private lateinit var idkButton: Button
     private lateinit var scoreTextView: TextView
+    private lateinit var heartTextView: TextView
 
     private lateinit var imageBackground: ImageView
     private lateinit var greenFlashAnimation: AnimationDrawable
@@ -63,7 +65,7 @@ open class ClassicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_challenge)
+        setContentView(R.layout.activity_classic)
 
         // select difficulty from diff selector activity
         val intent = intent
@@ -93,9 +95,12 @@ open class ClassicActivity : AppCompatActivity() {
         // Set the initial background (silver)
         imageBackground.setBackgroundResource(R.color.silver)
 
-        confirmButton = findViewById<Button>(R.id.confirmButton)
-        idkButton = findViewById<Button>(R.id.idkButton)
+        confirmButton = findViewById(R.id.confirmButton)
+        idkButton = findViewById(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
+        heartTextView = findViewById(R.id.heartsText)
+
+        heartTextView.text = "Hearts: $hearts"
 
         // Load sound effects
         mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
@@ -118,7 +123,7 @@ open class ClassicActivity : AppCompatActivity() {
                 json.put("id", rng)
 
                 // Send the API POST request
-                if (rng != 0) {
+                if (rng != 0 && hearts >= 0) {
                     playRound(json)
                 }
 
@@ -141,11 +146,23 @@ open class ClassicActivity : AppCompatActivity() {
             json.put("id", rng)
 
             // Send the API POST request
-            if (rng != 0)
+            if (rng != 0 && hearts >= 0)
                 playRound(json)
         }
 
         idkButton.setOnClickListener {
+
+            if (hearts < 0) {
+                // If no hearts left, show a message or perform any other action
+                runOnUiThread {
+                    Toast.makeText(
+                        this@ClassicActivity,
+                        "Game Over! No hearts remaining.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return@setOnClickListener
+            }
 
             // Disable both buttons
             confirmButton.isEnabled = false
@@ -181,14 +198,17 @@ open class ClassicActivity : AppCompatActivity() {
                         }
                         shouldGenerateNewSprite = true
                         score -= 10
+                        hearts--
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
+                                heartTextView.text = "Hearts: $hearts"
                             }
                             score = 0
                         } else {
                             runOnUiThread {
                                 scoreTextView.text = "Score: $score"
+                                heartTextView.text = "Hearts: $hearts"
                             }
                         }
                         loadPokemonSprite()
@@ -207,7 +227,7 @@ open class ClassicActivity : AppCompatActivity() {
         }
 
         // Load Pokemon sprite from the API
-        if (shouldGenerateNewSprite)
+        if (shouldGenerateNewSprite && hearts >= 0)
             generatePokemonSprite()
     }
 
@@ -232,13 +252,41 @@ open class ClassicActivity : AppCompatActivity() {
         runOnUiThread {
             Glide.with(this@ClassicActivity).load(spriteUrl).into(pokemonImageView)
         }
-        // wait 2 seconds for next round
-        Thread.sleep(2000)
-        generatePokemonSprite()
+
+        if (hearts >= 0) {
+            // wait 2 seconds for next round
+            Thread.sleep(2000)
+            generatePokemonSprite()
+        } else {
+            endGame()
+        }
+    }
+
+    private fun endGame() {
+        runOnUiThread {
+            confirmButton.isEnabled = false
+            heartTextView.text = "Game over!"
+            Toast.makeText(
+                this@ClassicActivity,
+                "Game Over! No hearts remaining.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Navigate back to the main menu
+            val intent = Intent(this@ClassicActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 3000)
     }
 
     // confirm guess (play a round)
     private fun playRound(json: JSONObject) {
+
+        if (hearts < 0) {
+            endGame()
+        }
 
         val client = OkHttpClient()
         val url = "$apiUrl/play"
@@ -277,10 +325,12 @@ open class ClassicActivity : AppCompatActivity() {
                         // handle wrong
                         shouldGenerateNewSprite = false
                         score -= 1
+                        hearts--
                         if (score < 0)
                             score = 0
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
+                            heartTextView.text = "Hearts: $hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
                             playWrongSound()
@@ -293,10 +343,12 @@ open class ClassicActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     runOnUiThread {
                         scoreTextView.text = "Score: $score"
+                        heartTextView.text = "Hearts: $hearts"
                         confirmButton.isEnabled = true
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
                     }
+
                     // Create a JSON object with name and id if current score is better
                     // only if difficulty is on master
                     if (score > bestScore && difficulty == 2) {
@@ -311,6 +363,10 @@ open class ClassicActivity : AppCompatActivity() {
                         json.put("userId", userId)
                         json.put("score", score)
                         updateLeaderboard(json)
+                    }
+
+                    if (hearts < 0) {
+                        endGame()
                     }
                 }
             }
