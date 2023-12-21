@@ -110,6 +110,9 @@ open class ClassicActivity : AppCompatActivity() {
         confirmButton = findViewById(R.id.confirmButton)
         idkButton = findViewById(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
+        heartTextView = findViewById(R.id.heartsText)
+
+        heartTextView.text = "x$hearts"
 
         // Load sound effects
         mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
@@ -211,13 +214,16 @@ open class ClassicActivity : AppCompatActivity() {
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
+                                heartTextView.text = "x$hearts"
                             }
                             score = 0
                         } else {
                             runOnUiThread {
                                 scoreTextView.text = "Score: $score"
+                                heartTextView.text = "x$hearts"
                             }
                         }
+                        displayHearts()
                         loadPokemonSprite()
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -232,6 +238,7 @@ open class ClassicActivity : AppCompatActivity() {
                 }
             })
         }
+
         displayHearts()
 
         // Load Pokemon sprite from the API
@@ -239,22 +246,17 @@ open class ClassicActivity : AppCompatActivity() {
             generatePokemonSprite()
     }
 
-    private fun displayHearts(){
-        //display the number of hearths remaining
-        when (hearts) {
-            0 -> imageViewHeart1.visibility = View.INVISIBLE
-            1 -> {
-                imageViewHeart2.visibility = View.INVISIBLE
-                imageViewHeart3.visibility = View.INVISIBLE
-                imageViewHeart4.visibility = View.INVISIBLE
-                imageViewHeart5.visibility = View.INVISIBLE
-            }
-            2 -> imageViewHeart3.visibility = View.INVISIBLE
-            3 -> {
-                imageViewHeart4.visibility = View.INVISIBLE
-                imageViewHeart5.visibility = View.INVISIBLE
-            }
-            4 -> imageViewHeart5.visibility = View.INVISIBLE
+    private fun displayHearts() {
+        val heartImageViews = listOf(
+            imageViewHeart1,
+            imageViewHeart2,
+            imageViewHeart3,
+            imageViewHeart4,
+            imageViewHeart5
+        )
+
+        for (i in heartImageViews.indices) {
+            heartImageViews[i].visibility = if (i < hearts) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -342,6 +344,7 @@ open class ClassicActivity : AppCompatActivity() {
                         score += 10
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
+                            heartTextView.text = "x$hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
                             greenFlashAnimation.start()
                             playGoodSound()
@@ -356,6 +359,7 @@ open class ClassicActivity : AppCompatActivity() {
                             score = 0
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
+                            heartTextView.text = "x$hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
                             playWrongSound()
@@ -368,6 +372,7 @@ open class ClassicActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     runOnUiThread {
                         scoreTextView.text = "Score: $score"
+                        heartTextView.text = "x$hearts"
                         confirmButton.isEnabled = true
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
