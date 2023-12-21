@@ -208,6 +208,7 @@ open class ClassicActivity : AppCompatActivity() {
                         shouldGenerateNewSprite = true
                         score -= 10
                         hearts--
+                        displayHearts()
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
