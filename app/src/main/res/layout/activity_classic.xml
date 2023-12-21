@@ -17,26 +17,75 @@
         android:text="Classic Mode" />
 
     <!-- Text for Score -->
-    <TextView
-        android:id="@+id/heartsText"
-        style="@style/SubtitleTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:text="Hearts: 3" />
 
     <!-- Text for Score -->
+    <LinearLayout
+        android:id="@+id/heartsLayout"
+        android:layout_width="170dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginLeft="5dp">
+
+        <ImageView
+
+            android:id="@+id/heart1"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+            app:srcCompat="@drawable/heart_icon"
+            />
+        <ImageView
+
+            android:id="@+id/heart2"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/heart_icon"
+            />
+        <ImageView
+
+            android:id="@+id/heart3"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/heart_icon"
+            />
+        <ImageView
+
+            android:id="@+id/heart4"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/heart_icon"
+            />
+        <ImageView
+
+            android:id="@+id/heart5"
+            style="@style/SubtitleTextStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            app:srcCompat="@drawable/heart_icon"
+            />
+
+    </LinearLayout>
+    <!-- ImageView to display the Pokemon sprite -->
+
     <TextView
         android:id="@+id/scoreText"
         style="@style/SubtitleTextStyle"
-        android:layout_below="@+id/heartsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_marginTop="64dp"
+        android:layout_marginRight="15dp"
         android:text="Score: 0" />
 
-    <!-- ImageView to display the Pokemon sprite -->
     <ImageView
         android:id="@+id/pokemonImageView"
         android:layout_width="256dp"

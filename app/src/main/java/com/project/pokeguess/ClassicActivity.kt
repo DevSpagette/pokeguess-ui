@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
@@ -48,6 +49,11 @@ open class ClassicActivity : AppCompatActivity() {
     private lateinit var idkButton: Button
     private lateinit var scoreTextView: TextView
     private lateinit var heartTextView: TextView
+    private lateinit var imageViewHeart1: ImageView
+    private lateinit var imageViewHeart2: ImageView
+    private lateinit var imageViewHeart3: ImageView
+    private lateinit var imageViewHeart4: ImageView
+    private lateinit var imageViewHeart5: ImageView
 
     private lateinit var imageBackground: ImageView
     private lateinit var greenFlashAnimation: AnimationDrawable
@@ -66,6 +72,12 @@ open class ClassicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classic)
+
+            imageViewHeart1 = findViewById(R.id.heart1)
+            imageViewHeart2 = findViewById(R.id.heart2)
+            imageViewHeart3 = findViewById(R.id.heart3)
+            imageViewHeart4 = findViewById(R.id.heart4)
+            imageViewHeart5 = findViewById(R.id.heart5)
 
         // select difficulty from diff selector activity
         val intent = intent
@@ -98,9 +110,6 @@ open class ClassicActivity : AppCompatActivity() {
         confirmButton = findViewById(R.id.confirmButton)
         idkButton = findViewById(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
-        heartTextView = findViewById(R.id.heartsText)
-
-        heartTextView.text = "Hearts: $hearts"
 
         // Load sound effects
         mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
@@ -202,13 +211,11 @@ open class ClassicActivity : AppCompatActivity() {
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
-                                heartTextView.text = "Hearts: $hearts"
                             }
                             score = 0
                         } else {
                             runOnUiThread {
                                 scoreTextView.text = "Score: $score"
-                                heartTextView.text = "Hearts: $hearts"
                             }
                         }
                         loadPokemonSprite()
@@ -225,10 +232,30 @@ open class ClassicActivity : AppCompatActivity() {
                 }
             })
         }
+        displayHearts()
 
         // Load Pokemon sprite from the API
         if (shouldGenerateNewSprite && hearts >= 0)
             generatePokemonSprite()
+    }
+
+    private fun displayHearts(){
+        //display the number of hearths remaining
+        when (hearts) {
+            0 -> imageViewHeart1.visibility = View.INVISIBLE
+            1 -> {
+                imageViewHeart2.visibility = View.INVISIBLE
+                imageViewHeart3.visibility = View.INVISIBLE
+                imageViewHeart4.visibility = View.INVISIBLE
+                imageViewHeart5.visibility = View.INVISIBLE
+            }
+            2 -> imageViewHeart3.visibility = View.INVISIBLE
+            3 -> {
+                imageViewHeart4.visibility = View.INVISIBLE
+                imageViewHeart5.visibility = View.INVISIBLE
+            }
+            4 -> imageViewHeart5.visibility = View.INVISIBLE
+        }
     }
 
     // loads obfuscated sprite, starts new round
@@ -265,7 +292,6 @@ open class ClassicActivity : AppCompatActivity() {
     private fun endGame() {
         runOnUiThread {
             confirmButton.isEnabled = false
-            heartTextView.text = "Game over!"
             Toast.makeText(
                 this@ClassicActivity,
                 "Game Over! No hearts remaining.",
@@ -330,7 +356,6 @@ open class ClassicActivity : AppCompatActivity() {
                             score = 0
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
-                            heartTextView.text = "Hearts: $hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
                             playWrongSound()
@@ -343,7 +368,6 @@ open class ClassicActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     runOnUiThread {
                         scoreTextView.text = "Score: $score"
-                        heartTextView.text = "Hearts: $hearts"
                         confirmButton.isEnabled = true
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
@@ -371,6 +395,8 @@ open class ClassicActivity : AppCompatActivity() {
                 }
             }
         })
+        displayHearts()
+
     }
 
     // update the leaderboard entry
