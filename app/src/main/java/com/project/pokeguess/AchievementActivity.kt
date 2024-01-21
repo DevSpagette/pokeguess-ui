@@ -26,8 +26,6 @@ class AchievementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_achievement)
 
-        val token = getJwtToken()
-
         val backButton = findViewById<ImageButton>(R.id.back_to_main_button)
         backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -68,6 +66,7 @@ class AchievementActivity : AppCompatActivity() {
 
                     for (i in 0 until achievementsArray.length()) {
                         val achievementObject = achievementsArray.getJSONObject(i)
+                        val _id = achievementObject.getString("_id")
                         val name = achievementObject.getString("name")
                         val description = achievementObject.getString("description")
                         val goal = achievementObject.getInt("goal")
@@ -75,7 +74,7 @@ class AchievementActivity : AppCompatActivity() {
                         val unlocked = achievementObject.getBoolean("unlocked")
 
                         // Create an AchievementEntry object and add it to the list
-                        val achievementEntry = AchievementEntry(name, description,progress, goal, unlocked)
+                        val achievementEntry = AchievementEntry(_id, name, description, progress, goal, unlocked)
                         userAchievements.add(achievementEntry)
                     }
 

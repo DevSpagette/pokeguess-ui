@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
@@ -40,9 +41,11 @@ open class ChallengeActivity : AppCompatActivity() {
     private lateinit var redFlashAnimation: AnimationDrawable
 
     private val apiUrl = "https://pokeguess-api.onrender.com/pokemon"
+    private val userUrl = "https://pokeguess-api.onrender.com/user"
     private var jwtToken: String? = null
     private var userId: String? = null
     private var bestScore: Long = 0
+    private var goodGuesses: Int = 0
 
     // Initialize MediaPlayer objects
     private var mediaPlayerGood: MediaPlayer? = null
@@ -238,6 +241,7 @@ open class ChallengeActivity : AppCompatActivity() {
                     if (response.code == 200) {
                         shouldGenerateNewSprite = true
                         score += 10
+                        goodGuesses++
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
@@ -245,6 +249,7 @@ open class ChallengeActivity : AppCompatActivity() {
                             playGoodSound()
                         }
                         loadPokemonSprite()
+                        updateAchievements()
                     } else {
                         // handle wrong
                         shouldGenerateNewSprite = false
@@ -316,6 +321,171 @@ open class ChallengeActivity : AppCompatActivity() {
                     Snackbar.make(
                         findViewById(android.R.id.content),
                         "Leaderboard updated.",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    response.body?.close()
+                }
+            }
+        })
+    }
+
+    interface AchievementCallback {
+        fun onSuccess(achievements: List<AchievementEntry>)
+        fun onFailure()
+    }
+    // get userAchievements
+    private fun getAchievements(callback: AchievementCallback) {
+        val client = OkHttpClient()
+        val url = "$userUrl/profile/achiv"
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("Authorization", "Bearer $jwtToken")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Could not get achievements, try again later.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    callback.onFailure()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        val json = JSONObject(responseBody)
+
+                        // Assuming 'achievements' is an array in the JSON response
+                        val achievementsArray = json.getJSONArray("achievements")
+                        val userAchievements = mutableListOf<AchievementEntry>()
+
+                        for (i in 0 until achievementsArray.length()) {
+                            val achievementObject = achievementsArray.getJSONObject(i)
+                            val _id = achievementObject.getString("_id")
+                            val name = achievementObject.getString("name")
+                            val description = achievementObject.getString("description")
+                            val goal = achievementObject.getInt("goal")
+                            val progress = achievementObject.getInt("progress")
+                            val unlocked = achievementObject.getBoolean("unlocked")
+
+                            // Create an AchievementEntry object and add it to the list
+                            val achievementEntry = AchievementEntry(_id, name, description, progress, goal, unlocked)
+                            userAchievements.add(achievementEntry)
+                        }
+
+                        callback.onSuccess(userAchievements)
+                    } else {
+                        runOnUiThread {
+                            Snackbar.make(
+                                findViewById(android.R.id.content),
+                                "Could not get achievements, try again later.",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        callback.onFailure()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    response.body?.close()
+                }
+            }
+        })
+    }
+
+    // Update userAchievements
+    private fun updateAchievements() {
+        // Call getAchievements to retrieve the latest achievements
+        getAchievements(object : AchievementCallback {
+            override fun onSuccess(achievements: List<AchievementEntry>) {
+                // Find achievements where progress is less than the goal
+                val eligibleAchievements = achievements.filter { it.progress < it.goal }
+
+                if (eligibleAchievements.isNotEmpty()) {
+
+                    // Update the progress based on goodGuesses for all eligible achievements
+                    val updatedAchievements = eligibleAchievements.map { achievement ->
+                        val updatedProgress = achievement.progress + 1
+                        val newProgress = minOf(updatedProgress, achievement.goal)
+
+                        AchievementEntry(
+                            achievement._id,
+                            achievement.name,
+                            achievement.description,
+                            newProgress,
+                            achievement.goal,
+                            newProgress >= achievement.goal
+                        )
+                    }
+
+                    // Create a JSON object with the updated achievements list
+                    val json = JSONObject()
+                    val achievementsArray = JSONArray()
+                    for (achievement in updatedAchievements) {
+                        val achievementObject = JSONObject()
+                        achievementObject.put("_id", achievement._id)
+                        achievementObject.put("name", achievement.name)
+                        achievementObject.put("description", achievement.description)
+                        achievementObject.put("goal", achievement.goal)
+                        achievementObject.put("progress", achievement.progress)
+                        achievementObject.put("unlocked", achievement.unlocked)
+                        achievementsArray.put(achievementObject)
+                    }
+                    json.put("achievements", achievementsArray)
+
+                    // Now, update the userAchievements with the latest achievements
+                    performUpdate(json)
+                }
+            }
+
+            override fun onFailure() {
+                // Handle failure to get achievements
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Could not update achievements, try again later.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        })
+    }
+
+    private fun performUpdate(json: JSONObject) {
+        val client = OkHttpClient()
+        val url = "$userUrl/achievements"
+        val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val request = Request.Builder()
+            .url(url)
+            .put(body)
+            .addHeader("Authorization", "Bearer $jwtToken")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Could not update achievements, try again later.",
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Achievements updated.",
                         Snackbar.LENGTH_LONG
                     )
                         .show()
