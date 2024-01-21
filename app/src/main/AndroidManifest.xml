@@ -23,10 +23,12 @@
             android:exported="false" />
         <activity
             android:name=".DiffSelectorActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".AuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AchievementActivity"
             android:exported="false" />
         <activity
             android:name=".LeaderboardActivity"

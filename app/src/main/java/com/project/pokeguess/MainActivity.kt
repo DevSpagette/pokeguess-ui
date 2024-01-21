@@ -164,6 +164,7 @@ class MainActivity : AppCompatActivity() {
         checkForUpdates()
 
         val userButton = findViewById<ImageButton>(R.id.user_button)
+        val achievementsButton = findViewById<ImageButton>(R.id.achievements_button)
         val classicButton = findViewById<Button>(R.id.classic_mode_button)
         val challengeButton = findViewById<Button>(R.id.challenge_mode_button)
         val leaderboardButton = findViewById<Button>(R.id.leaderboard_button)
@@ -189,6 +190,13 @@ class MainActivity : AppCompatActivity() {
             // Create an Intent to navigate to profile page
             playUiSound()
             val intent = Intent(this, AuthActivity::class.java)
+            startActivity(intent)
+        }
+
+        achievementsButton.setOnClickListener {
+            // Create an Intent to navigate to the achievements page
+            playUiSound()
+            val intent = Intent(this, AchievementActivity::class.java)
             startActivity(intent)
         }
 

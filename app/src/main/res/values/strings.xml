@@ -55,6 +55,26 @@
     <string name="settings_warning">App needs to restart for the generation settings to apply!</string>
     <string name="settings_save_button">Save</string>
 
+    <!--===================-->
+    <!-- Achievements page -->
+    <!--===================-->
+    <string name="achievements_title">Achievements</string>
+
+    <string name="achievement_1_name">Who\'s this Pokémon?</string>
+    <string name="achievement_1_description">Guess one Pokémon name correctly.</string>
+
+    <string name="achievement_2_name">Gym Leader</string>
+    <string name="achievement_2_description">Guess 10 Pokémon names correctly.</string>
+
+    <string name="achievement_3_name">Elite 4</string>
+    <string name="achievement_3_description">Guess 100 Pokémon names correctly.</string>
+
+    <string name="achievement_4_name">Champion</string>
+    <string name="achievement_4_description">Guess 250 Pokémon names correctly.</string>
+
+    <string name="achievement_5_name">Master Detective</string>
+    <string name="achievement_5_description">Guess 1000 Pokémon names correctly.</string>
+
     <!--====================-->
     <!-- Diff selector page -->
     <!--====================-->
