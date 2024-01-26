@@ -84,7 +84,7 @@
         android:layout_gravity="end"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="15dp"
-        android:text="Score: 100" />
+        android:text="Score: 0" />
 
     <ImageView
         android:id="@+id/pokemonImageView"
