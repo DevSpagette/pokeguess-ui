@@ -11,8 +11,8 @@ android {
         applicationId = "com.project.pokeguess"
         minSdk = 24
         targetSdk = 33
-        versionCode = 16
-        versionName = "1.6.0"
+        versionCode = 17
+        versionName = "1.6.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "PokeGuess_$versionName")

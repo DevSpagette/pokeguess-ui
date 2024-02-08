@@ -23,7 +23,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.*
 import java.io.IOException
-import java.util.Random
 
 open class ClassicActivity : AppCompatActivity() {
 
@@ -48,12 +47,9 @@ open class ClassicActivity : AppCompatActivity() {
     private lateinit var confirmButton: Button
     private lateinit var idkButton: Button
     private lateinit var scoreTextView: TextView
+
     private lateinit var heartTextView: TextView
-    private lateinit var imageViewHeart1: ImageView
-    private lateinit var imageViewHeart2: ImageView
-    private lateinit var imageViewHeart3: ImageView
-    private lateinit var imageViewHeart4: ImageView
-    private lateinit var imageViewHeart5: ImageView
+    private lateinit var imageViewHeart: ImageView
 
     private lateinit var imageBackground: ImageView
     private lateinit var greenFlashAnimation: AnimationDrawable
@@ -73,11 +69,7 @@ open class ClassicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classic)
 
-            imageViewHeart1 = findViewById(R.id.heart1)
-            imageViewHeart2 = findViewById(R.id.heart2)
-            imageViewHeart3 = findViewById(R.id.heart3)
-            imageViewHeart4 = findViewById(R.id.heart4)
-            imageViewHeart5 = findViewById(R.id.heart5)
+        imageViewHeart = findViewById(R.id.heartIcon)
 
         // select difficulty from diff selector activity
         val intent = intent
@@ -110,9 +102,7 @@ open class ClassicActivity : AppCompatActivity() {
         confirmButton = findViewById(R.id.confirmButton)
         idkButton = findViewById(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
-        heartTextView = findViewById(R.id.heartsText)
-
-        heartTextView.text = "x$hearts"
+        heartTextView = findViewById(R.id.heartsCountText)
 
         // Load sound effects
         mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
@@ -214,13 +204,11 @@ open class ClassicActivity : AppCompatActivity() {
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
-                                heartTextView.text = "x$hearts"
                             }
                             score = 0
                         } else {
                             runOnUiThread {
                                 scoreTextView.text = "Score: $score"
-                                heartTextView.text = "x$hearts"
                             }
                         }
                         displayHearts()
@@ -229,7 +217,6 @@ open class ClassicActivity : AppCompatActivity() {
                         e.printStackTrace()
                     } finally {
                         runOnUiThread {
-                            // Enable both buttons
                             confirmButton.isEnabled = true
                             idkButton.isEnabled = true
                         }
@@ -247,17 +234,18 @@ open class ClassicActivity : AppCompatActivity() {
     }
 
     private fun displayHearts() {
-        val heartImageViews = listOf(
-            imageViewHeart1,
-            imageViewHeart2,
-            imageViewHeart3,
-            imageViewHeart4,
-            imageViewHeart5
-        )
 
-        for (i in heartImageViews.indices) {
-            heartImageViews[i].visibility = if (i < hearts) View.VISIBLE else View.INVISIBLE
+        runOnUiThread {
+            heartTextView.text = "x$hearts"
+
+            if (hearts > 0) {
+                imageViewHeart.visibility = View.VISIBLE
+            } else {
+                heartTextView.text = "Last chance!"
+                imageViewHeart.visibility = View.GONE
+            }
         }
+
     }
 
     // loads obfuscated sprite, starts new round
@@ -344,7 +332,6 @@ open class ClassicActivity : AppCompatActivity() {
                         score += 10
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
-                            heartTextView.text = "x$hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
                             greenFlashAnimation.start()
                             playGoodSound()
@@ -360,12 +347,12 @@ open class ClassicActivity : AppCompatActivity() {
                             score = 0
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
-                            heartTextView.text = "x$hearts"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
                             playWrongSound()
                         }
                     }
+                    displayHearts()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
@@ -373,7 +360,6 @@ open class ClassicActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     runOnUiThread {
                         scoreTextView.text = "Score: $score"
-                        heartTextView.text = "x$hearts"
                         confirmButton.isEnabled = true
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
@@ -402,7 +388,6 @@ open class ClassicActivity : AppCompatActivity() {
             }
         })
         displayHearts()
-
     }
 
     // update the leaderboard entry
@@ -449,6 +434,7 @@ open class ClassicActivity : AppCompatActivity() {
         fun onSuccess(achievements: List<AchievementEntry>)
         fun onFailure()
     }
+
     // get userAchievements
     private fun getAchievements(callback: AchievementCallback) {
         val client = OkHttpClient()
@@ -492,7 +478,8 @@ open class ClassicActivity : AppCompatActivity() {
                             val unlocked = achievementObject.getBoolean("unlocked")
 
                             // Create an AchievementEntry object and add it to the list
-                            val achievementEntry = AchievementEntry(_id, name, description, progress, goal, unlocked)
+                            val achievementEntry =
+                                AchievementEntry(_id, name, description, progress, goal, unlocked)
                             userAchievements.add(achievementEntry)
                         }
 
@@ -575,7 +562,8 @@ open class ClassicActivity : AppCompatActivity() {
     private fun performUpdate(json: JSONObject) {
         val client = OkHttpClient()
         val url = "$userUrl/achievements"
-        val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val body =
+            json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = Request.Builder()
             .url(url)
             .put(body)
