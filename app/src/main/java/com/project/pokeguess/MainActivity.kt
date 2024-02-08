@@ -42,7 +42,7 @@ object GLOBAL {
     var GEN8Checked = true
     var GEN9Checked = true
 
-    const val MAX = 1017
+    const val MAX = 1025
     private val GEN1 = 1..151
     private val GEN2 = 152..251
     private val GEN3 = 252..386
@@ -51,7 +51,7 @@ object GLOBAL {
     private val GEN6 = 650..721
     private val GEN7 = 722..809
     private val GEN8 = 810..905
-    private val GEN9 = 906..1017
+    private val GEN9 = 906..1025
 
     private var selectedNumbers: MutableList<Int> = mutableListOf()
     private val classicModeNumbers = (1..MAX).toMutableList()
