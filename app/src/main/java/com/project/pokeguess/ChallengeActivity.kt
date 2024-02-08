@@ -29,12 +29,14 @@ open class ChallengeActivity : AppCompatActivity() {
     private var rng = 0
     private var name = "missing-no"
     private var score: Long = 0
+    private var streak = 0
     private var doubleBackToExitPressedOnce = false
 
     // Add member variables for the buttons
     private lateinit var confirmButton: Button
     private lateinit var idkButton: Button
     private lateinit var scoreTextView: TextView
+    private lateinit var streakTextView: TextView
 
     private lateinit var imageBackground: ImageView
     private lateinit var greenFlashAnimation: AnimationDrawable
@@ -71,6 +73,7 @@ open class ChallengeActivity : AppCompatActivity() {
         confirmButton = findViewById<Button>(R.id.confirmButton)
         idkButton = findViewById<Button>(R.id.idkButton)
         scoreTextView = findViewById(R.id.scoreText)
+        streakTextView = findViewById(R.id.streakText)
 
         // Load sound effects
         mediaPlayerGood = MediaPlayer.create(this, R.raw.good_guess)
@@ -156,14 +159,24 @@ open class ChallengeActivity : AppCompatActivity() {
                         }
                         shouldGenerateNewSprite = true
                         score -= 10
+
+                        if (streak >= 3) {
+                            runOnUiThread {
+                                showToast("Streak bonus cancelled. Keep guessing!")
+                            }
+                        }
+
+                        streak = 0
                         if (score < 0) {
                             runOnUiThread {
                                 scoreTextView.text = "Score: 0"
+                                streakTextView.text = "Streak +$streak"
                             }
                             score = 0
                         } else {
                             runOnUiThread {
                                 scoreTextView.text = "Score: $score"
+                                streakTextView.text = "Streak +$streak"
                             }
                         }
                         loadPokemonSprite()
@@ -241,8 +254,10 @@ open class ChallengeActivity : AppCompatActivity() {
                     if (response.code == 200) {
                         shouldGenerateNewSprite = true
                         score += 10
+                        streak++
                         goodGuesses++
                         runOnUiThread {
+                            streakTextView.text = "Streak +$streak"
                             scoreTextView.text = "Score: $score"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_green)
                             greenFlashAnimation.start()
@@ -252,12 +267,38 @@ open class ChallengeActivity : AppCompatActivity() {
                         updateAchievements()
                     } else {
                         // handle wrong
+
+                        // apply streak bonus first
+                        if (streak in 3..4) {
+                            score += 3
+                            runOnUiThread {
+                                showToast("Streak bonus +3 applied!")
+                            }
+                            streak = 0
+                        } else if (streak in 5..9) {
+                            score += 5
+                            runOnUiThread {
+                                showToast("Streak bonus +5 applied!")
+                            }
+                            streak = 0
+                        } else if (streak >= 10) {
+                            score += 10
+                            runOnUiThread {
+                                showToast("Streak bonus +10 applied!")
+                            }
+                            streak = 0
+                        }
+
                         shouldGenerateNewSprite = false
                         score -= 1
-                        if (score < 0)
+
+                        if (score < 0) {
                             score = 0
+                        }
+
                         runOnUiThread {
                             scoreTextView.text = "Score: $score"
+                            streakTextView.text = "Streak +$streak"
                             imageBackground.setBackgroundResource(R.drawable.bordered_imageview_red)
                             redFlashAnimation.start()
                             playWrongSound()
@@ -270,10 +311,12 @@ open class ChallengeActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     runOnUiThread {
                         scoreTextView.text = "Score: $score"
+                        streakTextView.text = "Streak +$streak"
                         confirmButton.isEnabled = true
                         idkButton.isEnabled = true
                         imageBackground.setBackgroundResource(R.color.silver)
                     }
+
                     // Create a JSON object with name and id if current score is better
                     if (score > bestScore) {
                         val sharedPreferences =
@@ -337,6 +380,7 @@ open class ChallengeActivity : AppCompatActivity() {
         fun onSuccess(achievements: List<AchievementEntry>)
         fun onFailure()
     }
+
     // get userAchievements
     private fun getAchievements(callback: AchievementCallback) {
         val client = OkHttpClient()
@@ -380,7 +424,8 @@ open class ChallengeActivity : AppCompatActivity() {
                             val unlocked = achievementObject.getBoolean("unlocked")
 
                             // Create an AchievementEntry object and add it to the list
-                            val achievementEntry = AchievementEntry(_id, name, description, progress, goal, unlocked)
+                            val achievementEntry =
+                                AchievementEntry(_id, name, description, progress, goal, unlocked)
                             userAchievements.add(achievementEntry)
                         }
 
@@ -463,7 +508,8 @@ open class ChallengeActivity : AppCompatActivity() {
     private fun performUpdate(json: JSONObject) {
         val client = OkHttpClient()
         val url = "$userUrl/achievements"
-        val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val body =
+            json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = Request.Builder()
             .url(url)
             .put(body)
@@ -512,6 +558,10 @@ open class ChallengeActivity : AppCompatActivity() {
         mediaPlayerGood?.release()
         mediaPlayerWrong?.release()
         super.onDestroy()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun getJwtToken(): String? {

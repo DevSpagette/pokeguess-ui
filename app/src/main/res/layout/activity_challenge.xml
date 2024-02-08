@@ -26,6 +26,17 @@
         android:layout_marginTop="64dp"
         android:text="Score: 0" />
 
+    <TextView
+        android:id="@+id/streakText"
+        style="@style/SubtitleTextStyle"
+        android:layout_below="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="13sp"
+        android:textColor="@color/orange_volc_lop"
+        android:text="Streak +0" />
+
     <!-- ImageView to display the Pokemon sprite -->
     <ImageView
         android:id="@+id/pokemonImageView"
