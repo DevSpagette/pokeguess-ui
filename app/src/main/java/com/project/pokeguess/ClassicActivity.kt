@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -59,7 +60,7 @@ open class ClassicActivity : AppCompatActivity() {
     private val userUrl = "https://pokeguess-api.onrender.com/user"
     private var jwtToken: String? = null
     private var userId: String? = null
-    private var bestScore: Long = 0
+    private var bestMaster: Long = 0
 
     // Initialize MediaPlayer objects
     private var mediaPlayerGood: MediaPlayer? = null
@@ -88,7 +89,7 @@ open class ClassicActivity : AppCompatActivity() {
 
         jwtToken = getJwtToken()
         userId = getUserId()
-        bestScore = getBestScore()
+        bestMaster = getBestMaster()
 
         imageBackground = findViewById(R.id.pokemonImageView)
         redFlashAnimation =
@@ -367,17 +368,22 @@ open class ClassicActivity : AppCompatActivity() {
 
                     // Create a JSON object with name and id if current score is better
                     // only if difficulty is on master
-                    if (score > bestScore && difficulty == 2) {
+                    Log.d("DifficultyLevel", "Difficulty: $difficulty") // Check difficulty level
+                    Log.d("Score", "Current Score: $score, Best Score: $bestMaster") // Check scores
+
+                    if (score > bestMaster && difficulty == 2) {
+                        Log.d("res", "leaderboard checking diff")
                         val sharedPreferences =
                             getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
-                        editor.remove("bestScore")
-                        editor.putLong("bestScore", bestScore)
+                        editor.remove("bestMaster")
+                        editor.putLong("bestMaster", bestMaster)
                         editor.apply()
 
                         val json = JSONObject()
                         json.put("userId", userId)
                         json.put("score", score)
+
                         updateLeaderboard(json)
                     }
 
@@ -392,6 +398,7 @@ open class ClassicActivity : AppCompatActivity() {
 
     // update the leaderboard entry
     private fun updateLeaderboard(json: JSONObject) {
+
         val client = OkHttpClient()
         val url = "$apiUrl/leaderboard/classic"
         val body =
@@ -626,10 +633,10 @@ open class ClassicActivity : AppCompatActivity() {
         return sharedPreferences.getString("userId", null)
     }
 
-    private fun getBestScore(): Long {
+    private fun getBestMaster(): Long {
         // Retrieve the jwtToken from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getLong("bestScore", 0)
+        return sharedPreferences.getLong("bestMaster", 0)
     }
 
     override fun onBackPressed() {

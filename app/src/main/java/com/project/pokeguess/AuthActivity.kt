@@ -62,17 +62,6 @@ class AuthActivity : AppCompatActivity() {
             usernameTextView.visibility = View.VISIBLE
             bestMasterTextView.visibility = View.VISIBLE
             bestScoreTextView.visibility = View.VISIBLE
-
-            // You can also show the username of the current user (fetch it from your server)
-            val username = getUsername()
-            val bestScore = getBestScore()
-            val bestMaster = getBestMaster()
-
-            if (username != null) {
-                usernameTextView.text = "Logged in as: $username"
-                bestMasterTextView.text = "Best score (Classic) : $bestMaster"
-                bestScoreTextView.text = "Best score (Challenge) : $bestScore"
-            }
         }
 
         loginButton.setOnClickListener {
@@ -213,6 +202,20 @@ class AuthActivity : AppCompatActivity() {
                     editor.putLong("bestScore", bestScore)
                     editor.putLong("bestMaster", bestMaster)
                     editor.apply()
+
+                    val usernameTextView = findViewById<TextView>(R.id.usernameTextView)
+                    val bestMasterTextView = findViewById<TextView>(R.id.bestMasterTextView)
+                    val bestScoreTextView = findViewById<TextView>(R.id.bestScoreTextView)
+
+                    val username = getUsername()
+
+                    runOnUiThread {
+                        if (username != null) {
+                            usernameTextView.text = "Logged in as: $username"
+                            bestMasterTextView.text = "Best score (Classic) : $bestMaster"
+                            bestScoreTextView.text = "Best score (Challenge) : $bestScore"
+                        }
+                    }
 
                 } else {
                     Snackbar.make(
